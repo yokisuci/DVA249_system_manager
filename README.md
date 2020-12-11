@@ -1,3 +1,3 @@
-# DVA249_Project
+# DVA249 Project
 
 A textbased system manager
