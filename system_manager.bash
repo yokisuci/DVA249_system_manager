@@ -46,6 +46,7 @@ function main_menu() {
 # ---------------------------
 
 function network_info() {
+
     dialog --clear \
         --title "SYSTEM MANAGER" \
         --msgbox "Select an option" \
@@ -176,7 +177,25 @@ function user_menu() {
 }
 
 function user_add() {
-    sleep 0
+
+    FULLNAME=$(dialog --clear \
+        --title "FULLNAME" \
+        --inputbox "Enter your full name" \
+        15 0 \
+        2>&1 >/dev/tty) 
+
+    USERNAME=$(dialog --clear \
+        --title "USERNAME" \
+        --inputbox "Enter a username" \
+        15 0 \
+        2>&1 >/dev/tty) 
+
+    PASSWORD=$(dialog --clear \
+        --title "PASSWORD" \
+        --passwordbox "Enter a password" \
+        15 0 \
+        2>&1 >/dev/tty) 
+
 }
 
 function user_list() {
@@ -240,7 +259,29 @@ function folder_menu() {
 }
 
 function folder_add() {
-    sleep 0
+
+    FOLDER=$(dialog --clear \
+        --title "ADD FOLDER" \
+        --inputbox "Enter a folder name" \
+        15 0 \
+        2>&1 >/dev/tty) 
+
+    mkdir $FOLDER
+    if [[$? != 0]]; then
+        CHOICE=$(dialog --clear \
+        --title "FOLDER CREATED" \
+        --msgbox "Created folder $FOLDER" \
+        15 0
+        2>&1 >/dev/tty) 
+        else
+        CHOICE=$(dialog --clear \
+        --title "ERROR" \
+        --msgbox "Some kind of error!" \
+        15 0
+        2>&1 >/dev/tty) 
+
+    fi
+
 }
 
 function folder_list() {
