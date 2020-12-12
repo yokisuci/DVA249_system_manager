@@ -1,3 +1,3 @@
-# DVA249 Project
+# DVA249 System Manager
 
 A dialog based system manager
