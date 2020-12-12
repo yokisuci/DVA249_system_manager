@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# ----------------------
-# --- PRINT MAIN MENU---
-# ----------------------
+# -----------------
+# --- MAIN MENU ---
+# -----------------
 
 # Define the dialog exit status codes
 : ${DIALOG_OK=0}
@@ -129,7 +129,7 @@ function group_modify() {
 function group_delete() {
     sleep 0
 }
-ö
+
 # ----------------------
 # --- USER FUNCTIONS ---
 # ----------------------
