@@ -199,6 +199,21 @@ function user_add() {
 }
 
 function user_list() {
+
+    USER=$(cat /etc/passwd | cut -d ':' -f 1)
+    CHOICE=$(dialog --clear \
+        --title "USERS" \
+        --msgbox "$USER" \
+        15 0 \
+        2>&1 >/dev/tty) 
+
+    return_code=$?
+    if [[ $return_code == $DIALOG_OK ]]; then
+        main_menu
+    elif [[ $return_code == $DIALOG_ESC ]]; then
+        user_list
+    fi
+
     sleep 0
 }
 
