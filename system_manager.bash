@@ -282,21 +282,23 @@ function folder_add() {
         2>&1 >/dev/tty) 
 
     mkdir $FOLDER
-    if [[$? != 0]]; then
+    if [[ $? == 0 ]]; then
         CHOICE=$(dialog --clear \
         --title "FOLDER CREATED" \
-        --msgbox "Created folder $FOLDER" \
-        15 0
+        --msgbox "Created folder '$FOLDER'" \
+        15 0 \
         2>&1 >/dev/tty) 
         else
         CHOICE=$(dialog --clear \
         --title "ERROR" \
         --msgbox "Some kind of error!" \
-        15 0
+        15 0 \
         2>&1 >/dev/tty) 
-
     fi
 
+    if [[ $? == $DIALOG_OK ]]; then
+        main_menu
+    fi
 }
 
 function folder_list() {
