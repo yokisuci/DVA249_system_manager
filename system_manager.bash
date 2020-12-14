@@ -49,19 +49,20 @@ function network_info() {
     
     CHOICE=$(dialog --clear \
     	--title "NETWORK INFO" \
-	--menu "Select an option" \
-	15 0 4\
-	a "Return to main menu" \
+        --menu "Select an option" \
+        15 0 4\
+        a "Return to main menu" \
         b "Print computer name"\
-	c "Print all network devices name"\
-	2>&1 >/dev/tty)
+        c "Print all network devices name"\
+        2>&1 >/dev/tty)
 
     return_code=$? 
-    if [[$return_code == $DIALOG_CANCEL ]]; then
-	main_menu
-    elif [[ $return_code == DIALOG_ESC ]]; then
-	network_info
+    if [[ $return_code == $DIALOG_CANCEL ]]; then
+        main_menu
+    elif [[ $return_code == $DIALOG_ESC ]]; then
+        network_info
     fi
+
 	clear
 	case $CHOICE in 
 		a)
@@ -71,7 +72,7 @@ function network_info() {
 			computer_name
 			;;
 		c)
-		       	name_network_interfaces
+		    name_network_interfaces
 			;;
 	esac
 }
@@ -80,6 +81,13 @@ function computer_name(){
 	dialog --backtitle "Computer Name" \
 	--title "About" \
 	--msgbox 'Nothing here yet' 10 20
+
+    return_code=$? 
+    if [[ $return_code == $DIALOG_OK ]]; then
+        network_info
+    elif [[ $return_code == $DIALOG_ESC ]]; then
+        network_info
+    fi
 }
 
 
