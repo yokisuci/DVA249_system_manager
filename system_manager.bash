@@ -386,4 +386,8 @@ function folder_delete() {
     sleep 0
 }
 
-main_menu
+if [[ $EUID == 0 ]]; then
+    main_menu
+else
+    echo "This script must run as root"
+fi
