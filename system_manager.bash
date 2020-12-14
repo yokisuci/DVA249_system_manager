@@ -38,7 +38,7 @@ function main_menu() {
         f)
             folder_menu
             ;;
-    esac
+	esac  
 }
 
 # ---------------------------
@@ -46,23 +46,45 @@ function main_menu() {
 # ---------------------------
 
 function network_info() {
+    
+    CHOICE=$(dialog --clear \
+    	--title "NETWORK INFO" \
+	--menu "Select an option" \
+	15 0 4\
+	a "Return to main menu" \
+        b "Print computer name"\
+	c "Print all network devices name"\
+	2>&1 >/dev/tty)
 
-    dialog --clear \
-        --title "SYSTEM MANAGER" \
-        --msgbox "Select an option" \
-        15 0
+    return_code=$? 
+    if [[$return_code == $DIALOG_CANCEL ]]; then
+	main_menu
+    elif [[ $return_code == DIALOG_ESC ]]; then
+	network_info
+    fi
+	clear
+	case $CHOICE in 
+		a)
+		    main_menu
+		    ;;
+		b) 
+			computer_name
+			;;
+		c)
+		       	name_network_interfaces
+			;;
+	esac
+}
 
-    return_value=$?
+function computer_name(){
+	dialog --backtitle "Computer Name" \
+	--title "About" \
+	--msgbox 'Nothing here yet' 10 20
+}
 
-    # Act on it
-    case $return_value in
-        $DIALOG_OK)
-            main_menu
-            ;;
-        $DIALOG_ESC)
-            network_info
-            ;;
-    esac
+
+function name_network_interfaces(){
+	echo "all the names is going here"
 }
 
 
@@ -177,7 +199,7 @@ function user_menu() {
 }
 
 function user_add() {
-
+	
     FULLNAME=$(dialog --clear \
         --title "FULLNAME" \
         --inputbox "Enter your full name" \
