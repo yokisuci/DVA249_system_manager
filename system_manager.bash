@@ -302,7 +302,29 @@ function folder_add() {
 }
 
 function folder_list() {
-    sleep 0
+    DIR=$(dialog --clear \
+        --title "ADD FOLDER" \
+        --inputbox "Enter a folder name" \
+        15 0 \
+        2>&1 >/dev/tty) 
+
+    CONTENT=$(ls $DIR)
+    if [[ $? == 0 ]]; then
+        CHOICE=$(dialog --clear \
+        --title "FOLDER CONTENT" \
+        --msgbox "$CONTENT" \
+        15 0 \
+        2>&1 >/dev/tty) 
+        else
+        CHOICE=$(dialog --clear \
+        --title "ERROR" \
+        --msgbox "Some kind of error!" \
+        15 0 \
+        2>&1 >/dev/tty) 
+    fi
+
+    # TODO Not finished
+
 }
 
 function folder_view() {
