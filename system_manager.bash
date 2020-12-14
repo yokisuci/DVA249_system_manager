@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+#testar om det funkar
 # -----------------
 # --- MAIN MENU ---
 # -----------------
