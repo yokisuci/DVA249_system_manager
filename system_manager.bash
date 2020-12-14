@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Just a test comment
-#testar om det funkar
+
 # -----------------
 # --- MAIN MENU ---
 # -----------------
