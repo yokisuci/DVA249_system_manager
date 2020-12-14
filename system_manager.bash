@@ -80,7 +80,7 @@ function network_info() {
 function computer_name(){
 	dialog --backtitle "Computer Name" \
 	--title "About" \
-	--msgbox 'Nothing here yet' 10 20
+	--msgbox $HOSTNAME 10 20
 
     return_code=$? 
     if [[ $return_code == $DIALOG_OK ]]; then
@@ -92,7 +92,24 @@ function computer_name(){
 
 
 function name_network_interfaces(){
-	echo "all the names is going here"
+	
+	IFACE=enp0s25
+	IP=$(ip route list | egrep default | cut -d ' ' -f 3)
+	MAC=$(cat /sys/class/net/$IFACE/address)
+	MAC2=$(ip a | grep ether | cut -d " " -f6)
+
+
+	dialog --backtitle "network interfaces" \
+	--title "About" \
+	--msgbox "Ip address =  $IP\n
+		Mac address = $MAC2" 10 20
+
+	return_code=$?
+	if [[ $return_code == $DIALOG_OK ]]; then
+		network_info
+	elif [[ $return_code == $DIALOG_ESC ]]; then
+		network_info
+	fi
 }
 
 
