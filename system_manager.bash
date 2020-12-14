@@ -24,7 +24,6 @@ function main_menu() {
         f "Folder Management" \
         2>&1 >/dev/tty) 
 
-    clear
     case $CHOICE in
         n)
             network_info
@@ -56,10 +55,10 @@ function network_info() {
         c "Print all network devices name"\
         2>&1 >/dev/tty)
 
-    return_code=$? 
-    if [[ $return_code == $DIALOG_CANCEL ]]; then
+    RETURN_CODE=$? 
+    if [[ $RETURN_CODE == $DIALOG_CANCEL ]]; then
         main_menu
-    elif [[ $return_code == $DIALOG_ESC ]]; then
+    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
         network_info
     fi
 
@@ -82,10 +81,10 @@ function computer_name(){
 	--title "About" \
 	--msgbox $HOSTNAME 10 20
 
-    return_code=$? 
-    if [[ $return_code == $DIALOG_OK ]]; then
+    RETURN_CODE=$? 
+    if [[ $RETURN_CODE == $DIALOG_OK ]]; then
         network_info
-    elif [[ $return_code == $DIALOG_ESC ]]; then
+    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
         network_info
     fi
 }
@@ -104,10 +103,10 @@ function name_network_interfaces(){
 	--msgbox "Ip address =  $IP\n
 		Mac address = $MAC2" 10 20
 
-	return_code=$?
-	if [[ $return_code == $DIALOG_OK ]]; then
+	RETURN_CODE=$?
+	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
 		network_info
-	elif [[ $return_code == $DIALOG_ESC ]]; then
+	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
 		network_info
 	fi
 }
@@ -130,10 +129,10 @@ function group_menu() {
         d "Delete Group" \
         2>&1 >/dev/tty) 
 
-    return_code=$?
-    if [[ $return_code == $DIALOG_CANCEL ]]; then
+    RETURN_CODE=$?
+    if [[ $RETURN_CODE == $DIALOG_CANCEL ]]; then
         main_menu
-    elif [[ $return_code == $DIALOG_ESC ]]; then
+    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
         group_menu
     fi
 
@@ -195,10 +194,10 @@ function user_menu() {
         d "Delete User" \
         2>&1 >/dev/tty) 
 
-    return_code=$?
-    if [[ $return_code == $DIALOG_CANCEL ]]; then
+    RETURN_CODE=$?
+    if [[ $RETURN_CODE == $DIALOG_CANCEL ]]; then
         main_menu
-    elif [[ $return_code == $DIALOG_ESC ]]; then
+    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
         user_menu
     fi
 
@@ -254,10 +253,10 @@ function user_list() {
         15 0 \
         2>&1 >/dev/tty) 
 
-    return_code=$?
-    if [[ $return_code == $DIALOG_OK ]]; then
+    RETURN_CODE=$?
+    if [[ $RETURN_CODE == $DIALOG_OK ]]; then
         main_menu
-    elif [[ $return_code == $DIALOG_ESC ]]; then
+    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
         user_list
     fi
 
@@ -293,10 +292,10 @@ function folder_menu() {
         d "Delete Folder" \
         2>&1 >/dev/tty) 
 
-    return_code=$?
-    if [[ $return_code == $DIALOG_CANCEL ]]; then
+    RETURN_CODE=$?
+    if [[ $RETURN_CODE == $DIALOG_CANCEL ]]; then
         main_menu
-    elif [[ $return_code == $DIALOG_ESC ]]; then
+    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
         folder_menu
     fi
 
@@ -335,7 +334,7 @@ function folder_add() {
         --msgbox "Created folder '$FOLDER'" \
         15 0 \
         2>&1 >/dev/tty) 
-        else
+    else
         CHOICE=$(dialog --clear \
         --title "ERROR" \
         --msgbox "Some kind of error!" \
@@ -362,16 +361,13 @@ function folder_list() {
         --msgbox "$CONTENT" \
         15 0 \
         2>&1 >/dev/tty) 
-        else
+    else
         CHOICE=$(dialog --clear \
         --title "ERROR" \
         --msgbox "Some kind of error!" \
         15 0 \
         2>&1 >/dev/tty) 
     fi
-
-    # TODO Not finished
-
 }
 
 function folder_view() {
