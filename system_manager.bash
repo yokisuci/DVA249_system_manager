@@ -162,23 +162,74 @@ function group_menu() {
 }
 
 function group_add() {
-    sleep 0
+    
+	dialog --backtitle "Add group" \
+	--title "About" \
+	--msgbox "Some information will be put here later..." 10 25
+
+	RETURN_CODE=$?
+	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+		main_menu
+	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+		group_menu
+	fi
 }
 
 function group_list() {
-    sleep 0
+    
+	dialog --backtitle "List all groups" \
+	--title "About" \
+	--msgbox "Some information will be put here later..." 10 25
+
+	RETURN_CODE=$?
+	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+		main_menu
+	elif [[ $RETURN_cODE == $DIALOG_ESC ]]; then
+		group_menu
+	fi
 }
 
 function group_view() {
-    sleep 0
+    
+	dialog --backtitle "View group" \
+	--title "About" \
+	--msgbox "Some information will be put here later..." 10 25
+
+	RETURN_CODE=$?
+	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+		main_menu
+	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+		group_menu
+	fi
 }
 
 function group_modify() {
-    sleep 0
+    
+	dialog --backtitle "Modify group" \
+	--title "About" \
+	--msgbox "Some information will be put here later..." 10 25
+
+	RETURN_CODE=$?
+	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+		main_menu
+	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+		group_menu
+	fi
 }
 
 function group_delete() {
-    sleep 0
+    
+	dialog --backtitle "Modify group" \
+	--title "About" \
+	--msgbox "Some information will be put here later..." 10 25
+
+	RETURN_CODE=$?
+	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+		main_menu
+	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+		group_menu
+	fi
+
 }
 
 # ----------------------
