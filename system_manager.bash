@@ -97,14 +97,15 @@ function name_network_interfaces(){
 	MAC=$(ip a | grep ether | cut -d " " -f6)
 	GATEWAY=$(ip -4 route show default | cut -d " " -f 3)
 	UP=$(ip a | awk '/state UP/ {printf $2}')
-
+	DOWN=$(ip a | awk '/state DOWN/ {printf $2}')
 
 	dialog --backtitle "network interfaces" \
 	--title "About" \
-	--msgbox "Ip address =  $IP\n
-		Mac address = $MAC\n
-		Gateway = $GATEWAY\n
-		IP addr up = $UP" 10 35
+	--msgbox "  Ip address:  $IP\n
+		Mac address:  $MAC\n
+		Gateway:  $GATEWAY\n
+		IP addr up:  $UP\n
+		IP addr down:  $DOWN" 10 40
 
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
