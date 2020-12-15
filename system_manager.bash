@@ -92,20 +92,23 @@ function computer_name(){
 
 function name_network_interfaces(){
 	
-	IFACE=enp0s25
-	IP=$(ip route list | egrep default | cut -d ' ' -f 3)
-	MAC=$(cat /sys/class/net/$IFACE/address)
-	MAC2=$(ip a | grep ether | cut -d " " -f6)
+	
+	IP=$(hostname -I)
+	MAC=$(ip a | grep ether | cut -d " " -f6)
+	GATEWAY=$(ip -4 route show default | cut -d " " -f 3)
+	UP=$(ip a | awk '/state UP/ {printf $2}')
 
 
 	dialog --backtitle "network interfaces" \
 	--title "About" \
 	--msgbox "Ip address =  $IP\n
-		Mac address = $MAC2" 10 20
+		Mac address = $MAC\n
+		Gateway = $GATEWAY\n
+		IP addr up = $UP" 10 35
 
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
-		network_info
+		main_menu
 	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
 		network_info
 	fi
