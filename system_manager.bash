@@ -128,7 +128,7 @@ function group_menu() {
         15 0 5 \
         a "Add Group" \
         l "List Group" \
-        v "View Group" \
+        v "List User Group" \
         m "Modify Group" \
         d "Delete Group" \
         2>&1 >/dev/tty) 
@@ -149,11 +149,13 @@ function group_menu() {
                 group_list
                 ;;
             v)
-                group_view
+                group_user_view
                 ;;
             m)
-                group_modify
+                group_add_user
                 ;;
+
+
             d)
                 group_delete
                 ;;
@@ -163,9 +165,13 @@ function group_menu() {
 
 function group_add() {
     
-	dialog --backtitle "Add group" \
-	--title "About" \
-	--msgbox "Some information will be put here later..." 10 25
+
+	FULLNAME=$(dialog --clear \
+	 --title "FULLNAME" \
+	 --inputbox "Enter your group name" \
+	  15 0 \
+	  2>&1 >/dev/tty)
+   	
 
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
@@ -177,9 +183,12 @@ function group_add() {
 
 function group_list() {
     
+	ALLGROUPS=$(getent group | cut -d: -f1 | sort)
+
 	dialog --backtitle "List all groups" \
-	--title "About" \
-	--msgbox "Some information will be put here later..." 10 25
+	--title "All groups" \
+	--msgbox "$ALLGROUPS\n"\
+       		10 25
 
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
@@ -187,9 +196,12 @@ function group_list() {
 	elif [[ $RETURN_cODE == $DIALOG_ESC ]]; then
 		group_menu
 	fi
+
+
+
 }
 
-function group_view() {
+function group_user_view() {
     
 	dialog --backtitle "View group" \
 	--title "About" \
@@ -203,7 +215,7 @@ function group_view() {
 	fi
 }
 
-function group_modify() {
+function group_add_user() {
     
 	dialog --backtitle "Modify group" \
 	--title "About" \
