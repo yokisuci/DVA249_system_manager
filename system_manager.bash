@@ -251,6 +251,7 @@ function group_delete() {
 function user_menu() {
 
     CHOICE=$(dialog --clear \
+        --backtitle "MAIN MENU" \
         --title "USER MENU" \
         --menu "Select an option" \
         15 0 5 \
@@ -292,12 +293,14 @@ function user_menu() {
 function user_add() {
 	
     FULLNAME=$(dialog --clear \
+        --backtitle "USER MENU" \
         --title "FULLNAME" \
         --inputbox "Enter your full name" \
         15 0 \
         2>&1 >/dev/tty) 
 
     USERNAME=$(dialog --clear \
+        --backtitle "USER MENU" \
         --title "USERNAME" \
         --inputbox "Enter a username" \
         15 0 \
@@ -315,6 +318,7 @@ function user_list() {
 
     USER=$(cat /etc/passwd | cut -d ':' -f 1)
     CHOICE=$(dialog --clear \
+        --backtitle "USER MENU" \
         --title "USERS" \
         --msgbox "$USER" \
         15 0 \
@@ -331,16 +335,95 @@ function user_list() {
 }
 
 function user_view() {
-    sleep 0
+
+    USER=$(dialog --clear \
+        --backtitle "USER MENU" \
+        --title "USER VIEW" \
+        --inputbox "Enter a user to view:" \
+        15 0 \
+        2>&1 >/dev/tty) 
+
+    # Check if user exist
+    if id "$USER" &> /dev/null; then
+        CHOICE=$(dialog --clear \
+            --backtitle "USER MENU" \
+            --title "ERROR" \
+            --msgbox "User exist!" \
+            15 0 \
+            2>&1 >/dev/tty) 
+            user_menu
+    else
+        CHOICE=$(dialog --clear \
+            --backtitle "USER MENU" \
+            --title "ERROR" \
+            --msgbox "You've typed wrong username!" \
+            15 0 \
+            2>&1 >/dev/tty) 
+        user_menu
+    fi
+
 }
 
 function user_modify() {
-    sleep 0
+
+    USER=$(dialog --clear \
+        --backtitle "USER MENU" \
+        --title "USER MODIFY" \
+        --inputbox "Enter a user to modify:" \
+        15 0 \
+        2>&1 >/dev/tty) 
+
+    # Check if user exist
+    if id "$USER" &> /dev/null; then
+        CHOICE=$(dialog --clear \
+            --backtitle "USER MENU" \
+            --title "ERROR" \
+            --msgbox "User exists!" \
+            15 0 \
+            2>&1 >/dev/tty) 
+        user_menu
+    else
+        CHOICE=$(dialog --clear \
+            --backtitle "USER MENU" \
+            --title "ERROR" \
+            --msgbox "You've typed an invalid username!" \
+            15 0 \
+            2>&1 >/dev/tty) 
+        user_menu
+    fi
+
 }
 
 function user_delete() {
-    sleep 0
+
+    USER=$(dialog --clear \
+        --backtitle "USER MENU" \
+        --title "USER DELETE" \
+        --inputbox "Enter a user to delete:" \
+        15 0 \
+        2>&1 >/dev/tty) 
+
+    # Check if user exist
+    if id "$USER" &> /dev/null; then
+        CHOICE=$(dialog --clear \
+            --backtitle "USER MENU" \
+            --title "ERROR" \
+            --msgbox "User exist!" \
+            15 0 \
+            2>&1 >/dev/tty) 
+        user_menu
+    else
+        CHOICE=$(dialog --clear \
+            --backtitle "USER MENU" \
+            --title "ERROR" \
+            --msgbox "User doesn't!" \
+            15 0 \
+            2>&1 >/dev/tty) 
+        user_menu
+    fi
+
 }
+
 
 # ------------------------
 # --- FOLDER FUNCTIONS ---
