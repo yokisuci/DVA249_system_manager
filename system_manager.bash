@@ -333,6 +333,13 @@ function user_add() {
         15 0 \
         2>&1 >/dev/tty) 
 
+    RETURN_CODE=$?
+    if [[ $RETURN_CODE == $DIALOG_CANCEL ]]; then
+        user_menu
+    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+        user_menu
+    fi
+
     USERNAME=$(dialog --clear \
         --backtitle "USER MENU" \
         --title "USERNAME" \
@@ -340,11 +347,46 @@ function user_add() {
         15 0 \
         2>&1 >/dev/tty) 
 
+    RETURN_CODE=$?
+    if [[ $RETURN_CODE == $DIALOG_CANCEL ]]; then
+        user_menu
+    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+        user_menu
+    fi
+
     PASSWORD=$(dialog --clear \
         --title "PASSWORD" \
         --passwordbox "Enter a password" \
         15 0 \
         2>&1 >/dev/tty) 
+
+    RETURN_CODE=$?
+    if [[ $RETURN_CODE == $DIALOG_CANCEL ]]; then
+        user_menu
+    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+        user_menu
+    fi
+
+    sudo useradd -m -p $(openssl passwd -1 $PASSWORD) -c "$FULLNAME" USERNAME
+
+    # Check if user exist
+    if [[ $? == 0 ]]; then
+        CHOICE=$(dialog --clear \
+            --backtitle "USER MENU" \
+            --title "SUCESS" \
+            --msgbox "Added user $USERNAME" \
+            15 0 \
+            2>&1 >/dev/tty) 
+            user_menu
+        else
+        CHOICE=$(dialog --clear \
+            --backtitle "USER MENU" \
+            --title "ERROR" \
+            --msgbox "Something went wrong!" \
+            15 0 \
+            2>&1 >/dev/tty) 
+            user_menu
+    fi
 
 }
 
@@ -439,13 +481,15 @@ function user_delete() {
 
     # Check if user exist
     if id "$USER" &> /dev/null; then
+        if sudo userdel -r $USER &> /dev/null; then
         CHOICE=$(dialog --clear \
             --backtitle "USER MENU" \
-            --title "ERROR" \
-            --msgbox "User exist!" \
+            --title "SUCCESS" \
+            --msgbox "Removed $USER" \
             15 0 \
             2>&1 >/dev/tty) 
         user_menu
+        fi
     else
         CHOICE=$(dialog --clear \
             --backtitle "USER MENU" \
