@@ -166,13 +166,29 @@ function group_menu() {
 function group_add() {
     
 
-	FULLNAME=$(dialog --clear \
-	 --title "FULLNAME" \
-	 --inputbox "Enter your group name" \
-	  15 0 \
-	  2>&1 >/dev/tty)
-   	
+	GROUPADD=$(dialog --clear \
+		--title "ADD GROUP" \
+		--inputbox "Enter a group name" \
+		15 0 \
+		2>&1 >/dev/tty)
 
+	groupadd $GROUPADD
+   	if [[ $? == 0 ]]; then
+		GROUPCHOICE=$(dialog --clear \
+			--title "GROUP CREATED" \
+			--msgbox "Created group '$GROUPADD'" \
+			15 0 \
+			2>&1 >/dev/tty)
+	else
+		GROUPCHOICE=$(dialog --clear \
+			--title "Error" \
+			--msgbox "Group already exists" \
+			15 25 \
+			2>&1 >/dev/tty)
+	fi
+
+
+	
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
 		main_menu
@@ -183,7 +199,7 @@ function group_add() {
 
 function group_list() {
     
-	ALLGROUPS=$(getent group | cut -d: -f1 | sort)
+	ALLGROUPS=$(getent group | awk -F: '$3 > 999 {print $1}' | sort)
 
 	dialog --backtitle "List all groups" \
 	--title "All groups" \
