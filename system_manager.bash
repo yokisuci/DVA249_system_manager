@@ -219,9 +219,27 @@ function group_list() {
 
 function group_user_view() {
     
-	dialog --backtitle "View group" \
-	--title "About" \
-	--msgbox "Some information will be put here later..." 10 25
+	SHOWGROUPUSERS=$(dialog --clear\
+	--title "List group members" \
+	--inputbox "Enter a group name" \
+        15 0\
+	2>&1 >/dev/tty)
+
+	MYCOMMAND=$(grep $SHOWGROUPUSERS /etc/group)
+	if [[ $? == 0 ]]; then
+		GROUPCHOICE=$(dialog --clear \
+			--title "Something" \
+			--msgbox $MYCOMMAND \
+			15 0 \
+			2>&1 >/dev/tty)
+	else
+		GROUPCHOICE=$(dialog --clear \
+			--title "Error" \
+			--msgbox "No such group exists" \
+			15 25 \
+			2>&1 >/dev/tty)
+	fi
+
 
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
