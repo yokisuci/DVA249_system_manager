@@ -125,11 +125,12 @@ function group_menu() {
     CHOICE=$(dialog --clear \
         --title "GROUP MENU" \
         --menu "Select an option" \
-        15 0 5 \
+        15 0 6 \
         a "Add Group" \
         l "List Group" \
         v "List User Group" \
-        m "Modify Group" \
+        u "Add user to group" \
+	p "Delete user from group" \
         d "Delete Group" \
         2>&1 >/dev/tty) 
 
@@ -152,10 +153,11 @@ function group_menu() {
                 group_user_view
                 ;;
             m)
-                group_add_user
+                group_add_user_to_group
                 ;;
-
-
+	    i)
+		group_delete_user_from_group
+		;;
             d)
                 group_delete
                 ;;
@@ -249,7 +251,7 @@ function group_user_view() {
 	fi
 }
 
-function group_add_user() {
+function group_add_user_to_group() {
     
 	dialog --backtitle "Modify group" \
 	--title "About" \
@@ -261,13 +263,48 @@ function group_add_user() {
 	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
 		group_menu
 	fi
+}
+
+function group_delete_user_from_group(){
+
+	dialog --backtitle "Modify group" \
+	--title "About" \
+	--msgbox "Some information will be put here..." 10 25
+	
+	RETURN_CODE=$?
+	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+		main_menu
+	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+		group_menu
+	fi
+
+
 }
 
 function group_delete() {
     
-	dialog --backtitle "Modify group" \
-	--title "About" \
-	--msgbox "Some information will be put here later..." 10 25
+	GROUPDELETE=$(dialog --clear\
+		--title "Delete group" \
+		--inputbox "Enter a group to delete" \
+		15 25\
+		2>&1 >/dev/tty)
+
+	MYCOMMAND=$(sudo groupdel $GROUPDELETE)
+	if [[ $? == 0 ]]; then
+		GROUPCHOICE=$(dialog --clear \
+			--title "Something" \
+			--msgbox "'$GROUPDELETE' was deleted"\
+			15 0 \
+			2>&1 >/dev/tty)
+	else 
+		GROUPCHOICE=$(dialog --clear \
+			--title "Error" \
+			--msgbox "No group to delete" \
+			15 25 \
+			2>&1 >/dev/tty)
+	fi
+	
+	
 
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
@@ -277,6 +314,8 @@ function group_delete() {
 	fi
 
 }
+
+
 
 # ----------------------
 # --- USER FUNCTIONS ---
