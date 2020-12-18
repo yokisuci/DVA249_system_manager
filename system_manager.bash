@@ -412,9 +412,9 @@ function user_add() {
         2>&1 >/dev/tty) 
 
     RETURN_CODE=$?
-    if [[ $RETURN_CODE == $DIALOG_CANCEL ]]; then
+    if [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
         user_menu
-    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
         user_menu
     fi
 
