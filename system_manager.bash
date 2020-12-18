@@ -129,8 +129,8 @@ function group_menu() {
         a "Add Group" \
         l "List Group" \
         v "List User Group" \
-        u "Add user to group" \
-	p "Delete user from group" \
+        m "Add user to group" \
+	i "Delete user from group" \
         d "Delete Group" \
         2>&1 >/dev/tty) 
 
@@ -273,12 +273,6 @@ function group_delete_user_from_group(){
 	15 25\
 	2>&1 >/dev/tty)
 
-	RETURN_CODE=$?
-	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
-		main_menu
-	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
-		group_menu
-	fi
 
 	GROUPTOBEREMOVEDFROM=$(dialog --clear\
 	--title "Group to be removed from" \
@@ -287,21 +281,13 @@ function group_delete_user_from_group(){
 	2>&1 >/dev/tty)
 
 
-	
-	RETURN_CODE=$?
-	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
-		main_menu
-	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
-		group_menu
-	fi
-
 
 	MYCOMMAND=$(sudo deluser $USERTOBEREMOVED $GROUPTOBEREMOVEDFROM)
 	if [[ $? == 0 ]]; then
 		GROUPCHOICE=$(dialog --clear \
 		--title "Something" \
 		--msgbox "'$USERTOBEREMOVED' was removed from '$GROUPTOBEREMOVEDFROM'"\
-		15 0 \
+		15 25 \
 		2>&1 >/dev/tty)
 	else GROUPCHOICE=$(dialog --clear \
 		--title "Error" \
@@ -309,6 +295,15 @@ function group_delete_user_from_group(){
 		15 25 \
 		2>&1 >/dev/tty)
 	fi
+
+	RETURN_CODE=$?
+	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+		main_menu
+	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+		group_menu
+	fi
+
+	
 
 
 
@@ -460,8 +455,9 @@ function user_add() {
             2>&1 >/dev/tty) 
             user_menu
     fi
+  }
 
-}
+
 
 function user_list() {
 
