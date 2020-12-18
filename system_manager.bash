@@ -465,7 +465,7 @@ function user_add() {
 
 function user_list() {
 
-    USER=$(cat /etc/passwd | cut -d ':' -f 1)
+    USER=$(getent passwd {1000..6000} | cut -d ':' -f 1)
     CHOICE=$(dialog --clear \
         --backtitle "USER MENU" \
         --title "USERS" \
@@ -486,28 +486,47 @@ function user_list() {
 function user_view() {
 
     USER=$(dialog --clear \
-        --backtitle "USER MENU" \
-        --title "USER VIEW" \
-        --inputbox "Enter a user to view:" \
-        15 0 \
-        2>&1 >/dev/tty) 
+    --backtitle "USER MENU" \
+    --title "USER VIEW" \
+    --inputbox "Enter a user to view:" \
+    15 0 \
+    2>&1 >/dev/tty) 
 
     # Check if user exist
     if id "$USER" &> /dev/null; then
+
         CHOICE=$(dialog --clear \
-            --backtitle "USER MENU" \
-            --title "ERROR" \
-            --msgbox "User exist!" \
-            15 0 \
-            2>&1 >/dev/tty) 
+        --backtitle "USER MENU" \
+        --title "" \
+        --menu "Select your information:" \
+        15 0 5 \
+        a "Attributes from /etc/passwd" \
+        g "Groups" \
+        2>&1 >/dev/tty) 
+
+        RETURN_CODE=$?
+        if [[ $RETURN_CODE == $DIALOG_CANCEL ]]; then
+            main_menu
+        elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
             user_menu
+        fi
+
+        clear
+        case $CHOICE in
+            a)
+                user_passwd_list
+                ;;
+            g)
+                user_group_list
+                ;;
+        esac
     else
         CHOICE=$(dialog --clear \
-            --backtitle "USER MENU" \
-            --title "ERROR" \
-            --msgbox "You've typed wrong username!" \
-            15 0 \
-            2>&1 >/dev/tty) 
+        --backtitle "USER MENU" \
+        --title "ERROR" \
+        --msgbox "You've typed wrong username!" \
+        15 0 \
+        2>&1 >/dev/tty) 
         user_menu
     fi
 
@@ -516,28 +535,28 @@ function user_view() {
 function user_modify() {
 
     USER=$(dialog --clear \
-        --backtitle "USER MENU" \
-        --title "USER MODIFY" \
-        --inputbox "Enter a user to modify:" \
-        15 0 \
-        2>&1 >/dev/tty) 
+    --backtitle "USER MENU" \
+    --title "USER MODIFY" \
+    --inputbox "Enter a user to modify:" \
+    15 0 \
+    2>&1 >/dev/tty) 
 
     # Check if user exist
     if id "$USER" &> /dev/null; then
         CHOICE=$(dialog --clear \
-            --backtitle "USER MENU" \
-            --title "ERROR" \
-            --msgbox "User exists!" \
-            15 0 \
-            2>&1 >/dev/tty) 
+        --backtitle "USER MENU" \
+        --title "ERROR" \
+        --msgbox "User exists!" \
+        15 0 \
+        2>&1 >/dev/tty) 
         user_menu
     else
         CHOICE=$(dialog --clear \
-            --backtitle "USER MENU" \
-            --title "ERROR" \
-            --msgbox "You've typed an invalid username!" \
-            15 0 \
-            2>&1 >/dev/tty) 
+        --backtitle "USER MENU" \
+        --title "ERROR" \
+        --msgbox "You've typed an invalid username!" \
+        15 0 \
+        2>&1 >/dev/tty) 
         user_menu
     fi
 
@@ -546,35 +565,73 @@ function user_modify() {
 function user_delete() {
 
     USER=$(dialog --clear \
-        --backtitle "USER MENU" \
-        --title "USER DELETE" \
-        --inputbox "Enter a user to delete:" \
-        15 0 \
-        2>&1 >/dev/tty) 
+    --backtitle "USER MENU" \
+    --title "USER DELETE" \
+    --inputbox "Enter a user to delete:" \
+    15 0 \
+    2>&1 >/dev/tty) 
 
     # Check if user exist
     if id "$USER" &> /dev/null; then
         if sudo userdel -r $USER &> /dev/null; then
-        CHOICE=$(dialog --clear \
+            CHOICE=$(dialog --clear \
             --backtitle "USER MENU" \
             --title "SUCCESS" \
             --msgbox "Removed $USER" \
             15 0 \
             2>&1 >/dev/tty) 
-        user_menu
+            user_menu
         fi
     else
-        CHOICE=$(dialog --clear \
+            CHOICE=$(dialog --clear \
             --backtitle "USER MENU" \
             --title "ERROR" \
             --msgbox "User doesn't!" \
             15 0 \
             2>&1 >/dev/tty) 
+            user_menu
+    fi
+
+}
+
+
+function user_passwd_list() {
+
+    UID_PASSWD=$(getent passwd | grep $USER | cut -d ':' -f 3)
+    GID_PASSWD=$(getent passwd | grep $USER | cut -d ':' -f 4)
+    FULLNAME=$(getent passwd | grep $USER | cut -d ':' -f 5)
+    HOME_DIR=$(getent passwd | grep $USER | cut -d ':' -f 6)
+    LOGIN_SHELL=$(getent passwd | grep $USER | cut -d ':' -f 7)
+
+    CHOICE=$(dialog --clear \
+    --backtitle "USER MENU" \
+    --title "USERS" \
+    --msgbox "UID $UID_PASSWD \
+              GID $GID_PASSWD
+              Fullname: $FULLNAME
+              Home dir.: $HOME_DIR
+              Login shell: $LOGIN_SHELL" \
+    15 0 \
+    2>&1 >/dev/tty) 
+
+    RETURN_CODE=$?
+    if [[ $RETURN_CODE == $OK ]]; then
+        main_menu
+    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
         user_menu
     fi
 
 }
 
+function user_group_list() {
+    USER=$(getent passwd {1000..6000} | cut -d ':' -f 1)
+    CHOICE=$(dialog --clear \
+        --backtitle "USER MENU" \
+        --title "USERS" \
+        --msgbox "$USER" \
+        15 0 \
+        2>&1 >/dev/tty) 
+}
 
 # ------------------------
 # --- FOLDER FUNCTIONS ---
