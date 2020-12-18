@@ -703,9 +703,10 @@ function folder_add() {
 }
 
 function folder_list() {
+
     DIR=$(dialog --clear \
         --title "ADD FOLDER" \
-        --inputbox "Enter a folder name" \
+        --inputbox "Current working directory is $(pwd)\nEnter a folder name" \
         15 0 \
         2>&1 >/dev/tty) 
 
@@ -716,17 +717,69 @@ function folder_list() {
         --msgbox "$CONTENT" \
         15 0 \
         2>&1 >/dev/tty) 
+
+        RETURN_CODE=$?
+        if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+            main_menu
+        elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+            folder_menu
+        fi
+
     else
         CHOICE=$(dialog --clear \
         --title "ERROR" \
-        --msgbox "Some kind of error!" \
+        --msgbox "Folder does not exist!" \
         15 0 \
         2>&1 >/dev/tty) 
+
+        RETURN_CODE=$?
+        if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+            main_menu
+        elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+            folder_menu
+        fi
+
     fi
 }
 
 function folder_view() {
-    sleep 0
+   DIR=$(dialog --clear \
+   --title "DELETE A FOLDER" \
+   --inputbox "What folder do you want to view?" \
+   15 0 \
+   2>&1 >/dev/tty) 
+
+    CONTENT=$(ls $DIR)
+    if [[ $? == 0 ]]; then
+        CHOICE=$(dialog --clear \
+        --title "VIEW FOLDER" \
+        --msgbox "$CONTENT" \
+        15 0 \
+        2>&1 >/dev/tty) 
+
+        RETURN_CODE=$?
+        if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+            folder_menu
+        elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+            sleep 0
+        fi
+
+    else
+        CHOICE=$(dialog --clear \
+        --title "ERROR" \
+        --msgbox "Folder does not exist!" \
+        15 0 \
+        2>&1 >/dev/tty) 
+
+        RETURN_CODE=$?
+        if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+            folder_menu
+        elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+            folder_menu
+        fi
+
+    fi
+
 }
 
 function folder_modify() {
@@ -734,7 +787,43 @@ function folder_modify() {
 }
 
 function folder_delete() {
-    sleep 0
+   DIR=$(dialog --clear \
+   --title "DELETE A FOLDER" \
+   --inputbox "What folder do you want to delete?" \
+   15 0 \
+   2>&1 >/dev/tty) 
+
+    CONTENT=$(rm -rf $DIR)
+    if [[ $? == 0 ]]; then
+        CHOICE=$(dialog --clear \
+        --title "FOLDER DELETED" \
+        --msgbox "$DIR deleted" \
+        15 0 \
+        2>&1 >/dev/tty) 
+
+        RETURN_CODE=$?
+        if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+            folder_menu
+        elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+            folder_menu
+        fi
+
+    else
+        CHOICE=$(dialog --clear \
+        --title "ERROR" \
+        --msgbox "Folder does not exist!" \
+        15 0 \
+        2>&1 >/dev/tty) 
+
+        RETURN_CODE=$?
+        if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+            folder_menu
+        elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+            folder_menu
+        fi
+
+    fi
+
 }
 
 if [[ $EUID == 0 ]]; then
