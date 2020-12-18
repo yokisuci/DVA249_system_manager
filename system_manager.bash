@@ -386,7 +386,7 @@ function user_add() {
         user_menu
     fi
 
-    sudo useradd -m -p $(openssl passwd -1 $PASSWORD) -c "$FULLNAME" USERNAME
+    sudo useradd -m -p $(openssl passwd -1 $PASSWORD) -c "$FULLNAME" $USERNAME
 
     # Check if user exist
     if [[ $? == 0 ]]; then
