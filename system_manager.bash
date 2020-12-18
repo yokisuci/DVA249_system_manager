@@ -602,15 +602,12 @@ function user_passwd_list() {
     FULLNAME=$(getent passwd | grep $USER | cut -d ':' -f 5)
     HOME_DIR=$(getent passwd | grep $USER | cut -d ':' -f 6)
     LOGIN_SHELL=$(getent passwd | grep $USER | cut -d ':' -f 7)
+    COMPLETE_INFO="UID: $UID_PASSWD\nGID: $GID_PASSWD\nFullname: $FULLNAME\nHome dir: $HOME_DIR\nLogin shell: $LOGIN_SHELL\n"
 
     CHOICE=$(dialog --clear \
     --backtitle "USER MENU" \
     --title "USERS" \
-    --msgbox "UID $UID_PASSWD \
-              GID $GID_PASSWD
-              Fullname: $FULLNAME
-              Home dir.: $HOME_DIR
-              Login shell: $LOGIN_SHELL" \
+    --msgbox "$COMPLETE_INFO" \
     15 0 \
     2>&1 >/dev/tty) 
 
