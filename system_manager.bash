@@ -265,9 +265,28 @@ function group_add_user() {
 
 function group_delete() {
     
-	dialog --backtitle "Modify group" \
-	--title "About" \
-	--msgbox "Some information will be put here later..." 10 25
+	GROUPDELETE=$(dialog --clear\
+		--title "Delete group" \
+		--inputbox "Enter a group to delete" \
+		15 25\
+		2>&1 >/dev/tty)
+
+	MYCOMMAND=$(sudo groupdel $GROUPDELETE)
+	if [[ $? == 0 ]]; then
+		GROUPCHOICE=$(dialog --clear \
+			--title "Something" \
+			--msgbox "'$GROUPDELETE' was deleted"\
+			15 0 \
+			2>&1 >/dev/tty)
+	else 
+		GROUPCHOICE=$(dialog --clear \
+			--title "Error" \
+			--msgbox "No group to delete" \
+			15 25 \
+			2>&1 >/dev/tty)
+	fi
+	
+	
 
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
