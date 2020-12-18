@@ -267,9 +267,26 @@ function group_add_user_to_group() {
 
 function group_delete_user_from_group(){
 
-	dialog --backtitle "Modify group" \
-	--title "About" \
-	--msgbox "Some information will be put here..." 10 25
+	USERTOBEREMOVED=$(dialog --clear\
+	--title "User to be removed" \
+	--inputbox "Enter user to be removed:" \
+	15 25\
+	2>&1 >/dev/tty)
+
+	RETURN_CODE=$?
+	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+		main_menu
+	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+		group_menu
+	fi
+
+	GROUPTOBEREMOVEDFROM=$(dialog --clear\
+	--title "Group to be removed from" \
+	--inputbox "Enter witch group to remove the user from:" \
+	15 25\
+	2>&1 >/dev/tty)
+
+
 	
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
@@ -277,6 +294,23 @@ function group_delete_user_from_group(){
 	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
 		group_menu
 	fi
+
+
+	MYCOMMAND=$(sudo deluser $USERTOBEREMOVED $GROUPTOBEREMOVEDFROM)
+	if [[ $? == 0 ]]; then
+		GROUPCHOICE=$(dialog --clear \
+		--title "Something" \
+		--msgbox "'$USERTOBEREMOVED' was removed from '$GROUPTOBEREMOVEDFROM'"\
+		15 0 \
+		2>&1 >/dev/tty)
+	else GROUPCHOICE=$(dialog --clear \
+		--title "Error" \
+		--msgbox "Could not remove user from group" \
+		15 25 \
+		2>&1 >/dev/tty)
+	fi
+
+
 
 
 }
