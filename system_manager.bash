@@ -5,12 +5,12 @@
 # -----------------
 
 # Define the dialog exit status codes
-: ${DIALOG_OK=0}
-: ${DIALOG_CANCEL=1}
-: ${DIALOG_HELP=2}
-: ${DIALOG_EXTRA=3}
-: ${DIALOG_ITEM_HELP=4}
-: ${DIALOG_ESC=255}
+: "${DIALOG_OK=0}"
+: "${DIALOG_CANCEL=1}"
+: "${DIALOG_HELP=2}"
+: "${DIALOG_EXTRA=3}"
+: "${DIALOG_ITEM_HELP=4}"
+: "${DIALOG_ESC=255}"
 
 function main_menu() {
 
@@ -56,9 +56,9 @@ function network_info() {
         2>&1 >/dev/tty)
 
     RETURN_CODE=$? 
-    if [[ $RETURN_CODE == $DIALOG_CANCEL ]]; then
+    if [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
         main_menu
-    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
         network_info
     fi
 
@@ -79,12 +79,12 @@ function network_info() {
 function computer_name(){
 	dialog --backtitle "Computer Name" \
 	--title "About" \
-	--msgbox $HOSTNAME 10 20
+	--msgbox "$HOSTNAME" 10 20
 
     RETURN_CODE=$? 
-    if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+    if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
         network_info
-    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
         network_info
     fi
 }
@@ -108,9 +108,9 @@ function name_network_interfaces(){
 		IP addr down:  $DOWN" 10 40
 
 	RETURN_CODE=$?
-	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
 		main_menu
-	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+	elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
 		network_info
 	fi
 }
@@ -135,9 +135,9 @@ function group_menu() {
         2>&1 >/dev/tty) 
 
     RETURN_CODE=$?
-    if [[ $RETURN_CODE == $DIALOG_CANCEL ]]; then
+    if [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
         main_menu
-    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
         group_menu
     fi
 
@@ -174,8 +174,7 @@ function group_add() {
 		15 0 \
 		2>&1 >/dev/tty)
 
-	groupadd $GROUPADD
-   	if [[ $? == 0 ]]; then
+	if groupadd "$GROUPADD" > /dev/null 2>&1; then
 		GROUPCHOICE=$(dialog --clear \
 			--title "GROUP CREATED" \
 			--msgbox "Created group '$GROUPADD'" \
@@ -192,9 +191,9 @@ function group_add() {
 
 	
 	RETURN_CODE=$?
-	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
 		main_menu
-	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+	elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
 		group_menu
 	fi
 }
@@ -209,9 +208,9 @@ function group_list() {
        		10 25
 
 	RETURN_CODE=$?
-	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
 		main_menu
-	elif [[ $RETURN_cODE == $DIALOG_ESC ]]; then
+	elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
 		group_menu
 	fi
 
@@ -227,11 +226,10 @@ function group_user_view() {
         15 0\
 	2>&1 >/dev/tty)
 
-	MYCOMMAND=$(grep $SHOWGROUPUSERS /etc/group)
-	if [[ $? == 0 ]]; then
+	if grep "$SHOWGROUPUSERS" /etc/group > /dev/null 2>&1; then
 		GROUPCHOICE=$(dialog --clear \
 			--title "Something" \
-			--msgbox $MYCOMMAND \
+			--msgbox "$MYCOMMAND" \
 			15 0 \
 			2>&1 >/dev/tty)
 	else
@@ -244,9 +242,9 @@ function group_user_view() {
 
 
 	RETURN_CODE=$?
-	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
 		main_menu
-	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+	elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
 		group_menu
 	fi
 }
@@ -258,9 +256,9 @@ function group_add_user_to_group() {
 	--msgbox "Some information will be put here later..." 10 25
 
 	RETURN_CODE=$?
-	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
 		main_menu
-	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+	elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
 		group_menu
 	fi
 }
@@ -282,8 +280,7 @@ function group_delete_user_from_group(){
 
 
 
-	MYCOMMAND=$(sudo deluser $USERTOBEREMOVED $GROUPTOBEREMOVEDFROM)
-	if [[ $? == 0 ]]; then
+	if sudo deluser "$USERTOBEREMOVED" "$GROUPTOBEREMOVEDFROM" > /dev/null 2>&1; then
 		GROUPCHOICE=$(dialog --clear \
 		--title "Something" \
 		--msgbox "'$USERTOBEREMOVED' was removed from '$GROUPTOBEREMOVEDFROM'"\
@@ -297,9 +294,9 @@ function group_delete_user_from_group(){
 	fi
 
 	RETURN_CODE=$?
-	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
 		main_menu
-	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+	elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
 		group_menu
 	fi
 
@@ -318,8 +315,7 @@ function group_delete() {
 		15 25\
 		2>&1 >/dev/tty)
 
-	MYCOMMAND=$(sudo groupdel $GROUPDELETE)
-	if [[ $? == 0 ]]; then
+	if sudo groupdel "$GROUPDELETE" > /dev/null 2>&1; then
 		GROUPCHOICE=$(dialog --clear \
 			--title "Something" \
 			--msgbox "'$GROUPDELETE' was deleted"\
@@ -336,9 +332,9 @@ function group_delete() {
 	
 
 	RETURN_CODE=$?
-	if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
 		main_menu
-	elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+	elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
 		group_menu
 	fi
 
@@ -365,9 +361,9 @@ function user_menu() {
         2>&1 >/dev/tty) 
 
     RETURN_CODE=$?
-    if [[ $RETURN_CODE == $DIALOG_CANCEL ]]; then
+    if [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
         main_menu
-    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
         user_menu
     fi
 
@@ -402,9 +398,9 @@ function user_add() {
         2>&1 >/dev/tty) 
 
     RETURN_CODE=$?
-    if [[ $RETURN_CODE == $DIALOG_CANCEL ]]; then
+    if [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
         user_menu
-    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
         user_menu
     fi
 
@@ -429,16 +425,13 @@ function user_add() {
         2>&1 >/dev/tty) 
 
     RETURN_CODE=$?
-    if [[ $RETURN_CODE == $DIALOG_CANCEL ]]; then
+    if [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
         user_menu
-    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
         user_menu
     fi
 
-    sudo useradd -m -p $(openssl passwd -1 $PASSWORD) -c "$FULLNAME" $USERNAME
-
-    # Check if user exist
-    if [[ $? == 0 ]]; then
+    if sudo useradd -m -p "$(openssl passwd -1 "$PASSWORD")" -c "$FULLNAME" "$USERNAME" > /dev/null 2>&1; then
         CHOICE=$(dialog --clear \
             --backtitle "USER MENU" \
             --title "SUCESS" \
@@ -470,9 +463,9 @@ function user_list() {
         2>&1 >/dev/tty) 
 
     RETURN_CODE=$?
-    if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+    if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
         main_menu
-    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
         user_list
     fi
 
@@ -501,9 +494,9 @@ function user_view() {
         2>&1 >/dev/tty) 
 
         RETURN_CODE=$?
-        if [[ $RETURN_CODE == $DIALOG_CANCEL ]]; then
+        if [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
             main_menu
-        elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+        elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
             user_menu
         fi
 
@@ -569,7 +562,7 @@ function user_delete() {
 
     # Check if user exist
     if id "$USER" &> /dev/null; then
-        if sudo userdel -r $USER &> /dev/null; then
+        if sudo userdel -r "$USER" &> /dev/null; then
             CHOICE=$(dialog --clear \
             --backtitle "USER MENU" \
             --title "SUCCESS" \
@@ -593,11 +586,11 @@ function user_delete() {
 
 function user_passwd_list() {
 
-    UID_PASSWD=$(getent passwd | grep $USER | cut -d ':' -f 3)
-    GID_PASSWD=$(getent passwd | grep $USER | cut -d ':' -f 4)
-    FULLNAME=$(getent passwd | grep $USER | cut -d ':' -f 5)
-    HOME_DIR=$(getent passwd | grep $USER | cut -d ':' -f 6)
-    LOGIN_SHELL=$(getent passwd | grep $USER | cut -d ':' -f 7)
+    UID_PASSWD=$(getent passwd | grep "$USER" | cut -d ':' -f 3)
+    GID_PASSWD=$(getent passwd | grep "$USER" | cut -d ':' -f 4)
+    FULLNAME=$(getent passwd | grep "$USER" | cut -d ':' -f 5)
+    HOME_DIR=$(getent passwd | grep "$USER" | cut -d ':' -f 6)
+    LOGIN_SHELL=$(getent passwd | grep "$USER" | cut -d ':' -f 7)
     COMPLETE_INFO="UID: $UID_PASSWD\nGID: $GID_PASSWD\nFullname: $FULLNAME\nHome dir: $HOME_DIR\nLogin shell: $LOGIN_SHELL\n"
 
     CHOICE=$(dialog --clear \
@@ -608,9 +601,9 @@ function user_passwd_list() {
     2>&1 >/dev/tty) 
 
     RETURN_CODE=$?
-    if [[ $RETURN_CODE == $OK ]]; then
+    if [[ $RETURN_CODE == "$OK" ]]; then
         main_menu
-    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
         user_menu
     fi
 
@@ -644,9 +637,9 @@ function folder_menu() {
         2>&1 >/dev/tty) 
 
     RETURN_CODE=$?
-    if [[ $RETURN_CODE == $DIALOG_CANCEL ]]; then
+    if [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
         main_menu
-    elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
         folder_menu
     fi
 
@@ -678,8 +671,7 @@ function folder_add() {
         15 0 \
         2>&1 >/dev/tty) 
 
-    mkdir $FOLDER
-    if [[ $? == 0 ]]; then
+    if mkdir "$FOLDER" > /dev/null 2>&1; then
         CHOICE=$(dialog --clear \
         --title "FOLDER CREATED" \
         --msgbox "Created folder '$FOLDER'" \
@@ -693,7 +685,7 @@ function folder_add() {
         2>&1 >/dev/tty) 
     fi
 
-    if [[ $? == $DIALOG_OK ]]; then
+    if [[ $CHOICE == "$DIALOG_OK" ]]; then
         main_menu
     fi
 }
@@ -706,8 +698,7 @@ function folder_list() {
         15 0 \
         2>&1 >/dev/tty) 
 
-    CONTENT=$(ls $DIR)
-    if [[ $? == 0 ]]; then
+    if ls "$DIR" > /dev/null 2>&1; then
         CHOICE=$(dialog --clear \
         --title "FOLDER CONTENT" \
         --msgbox "$CONTENT" \
@@ -715,9 +706,9 @@ function folder_list() {
         2>&1 >/dev/tty) 
 
         RETURN_CODE=$?
-        if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+        if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
             main_menu
-        elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+        elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
             folder_menu
         fi
 
@@ -729,9 +720,9 @@ function folder_list() {
         2>&1 >/dev/tty) 
 
         RETURN_CODE=$?
-        if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+        if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
             main_menu
-        elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+        elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
             folder_menu
         fi
 
@@ -745,8 +736,7 @@ function folder_view() {
    15 0 \
    2>&1 >/dev/tty) 
 
-    CONTENT=$(ls $DIR)
-    if [[ $? == 0 ]]; then
+    if ls "$DIR" > /dev/null 2>&1; then
         CHOICE=$(dialog --clear \
         --title "VIEW FOLDER" \
         --msgbox "$CONTENT" \
@@ -754,9 +744,9 @@ function folder_view() {
         2>&1 >/dev/tty) 
 
         RETURN_CODE=$?
-        if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+        if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
             folder_menu
-        elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+        elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
             sleep 0
         fi
 
@@ -768,9 +758,9 @@ function folder_view() {
         2>&1 >/dev/tty) 
 
         RETURN_CODE=$?
-        if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+        if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
             folder_menu
-        elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+        elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
             folder_menu
         fi
 
@@ -789,8 +779,7 @@ function folder_delete() {
    15 0 \
    2>&1 >/dev/tty) 
 
-    CONTENT=$(rm -rf $DIR)
-    if [[ $? == 0 ]]; then
+    if rm -rf "$DIR" > /dev/null 2>&1; then
         CHOICE=$(dialog --clear \
         --title "FOLDER DELETED" \
         --msgbox "$DIR deleted" \
@@ -798,9 +787,9 @@ function folder_delete() {
         2>&1 >/dev/tty) 
 
         RETURN_CODE=$?
-        if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+        if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
             folder_menu
-        elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+        elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
             folder_menu
         fi
 
@@ -812,9 +801,9 @@ function folder_delete() {
         2>&1 >/dev/tty) 
 
         RETURN_CODE=$?
-        if [[ $RETURN_CODE == $DIALOG_OK ]]; then
+        if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
             folder_menu
-        elif [[ $RETURN_CODE == $DIALOG_ESC ]]; then
+        elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
             folder_menu
         fi
 
