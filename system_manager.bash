@@ -225,8 +225,10 @@ function group_user_view() {
 	--inputbox "Enter a group name" \
         15 0\
 	2>&1 >/dev/tty)
-
-	if grep "$SHOWGROUPUSERS" /etc/group > /dev/null 2>&1; then
+	
+	
+	MYCOMMAND=$(grep $SHOWGROUPUSERS /etc/group)
+	if [[ $? == 0 ]]; then
 		GROUPCHOICE=$(dialog --clear \
 			--title "Something" \
 			--msgbox "$MYCOMMAND" \
@@ -251,9 +253,34 @@ function group_user_view() {
 
 function group_add_user_to_group() {
     
-	dialog --backtitle "Modify group" \
-	--title "About" \
-	--msgbox "Some information will be put here later..." 10 25
+	USERTOBEADDED=$(dialog --clear\
+	--title "User to be added" \
+	inputbox "Enter user to be added:" \
+	15 25\
+	2>&1 >/dev/tty)
+	
+	GROUPTOBEADDEDTO=$(dialog --clear\
+	--title "Group to be added to" \
+	--inputbox "Enter group to be added to:" \
+	15 25\
+	2>&1 >dev/tty)
+
+	if sudo usermod -a -G "$GROUPTOBEADDEDTO" "$USERTOBEADDED" > /dev/null 2>&1; then
+		GROUPCHOICE=$(dialog --clear \
+		--title "Something" \
+		--msgbox "'$USERTOBEADDED' was added to '$GROUPTOBEADDEDTO'"\
+		15 25\
+		2>&1 >/dev/tty)
+	else GROUPCHOICE=$(dialog --clear \
+		--title "Error" \
+		--msgbox "Could not add user to group" \
+		15 25\
+		2>&1 >/dev/tty)
+	fi
+
+	
+	
+	
 
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
@@ -299,12 +326,6 @@ function group_delete_user_from_group(){
 	elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
 		group_menu
 	fi
-
-	
-
-
-
-
 }
 
 function group_delete() {
