@@ -227,11 +227,10 @@ function group_user_view() {
 	2>&1 >/dev/tty)
 	
 	
-	MYCOMMAND=$(grep $SHOWGROUPUSERS /etc/group)
-	if [[ $? == 0 ]]; then
+	if grep "$SHOWGROUPUSERS" /etc/group > /dev/null 2>&1; then
 		GROUPCHOICE=$(dialog --clear \
 			--title "Something" \
-			--msgbox "$MYCOMMAND" \
+			--msgbox "$(grep "$SHOWGROUPUSERS" /etc/group)" \
 			15 0 \
 			2>&1 >/dev/tty)
 	else
