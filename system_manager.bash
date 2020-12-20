@@ -48,10 +48,10 @@ function network_info() {
     
     CHOICE=$(dialog --title "NETWORK INFO" \
         --menu "Select an option" \
+        15 0 4 \
         a "Return to main menu" \
         b "Print computer name"\
         c "Print all network devices name"\
-        15 0 4\
         2>&1 >/dev/tty)
 
     RETURN_CODE=$? 
@@ -239,16 +239,18 @@ function group_user_view() {
 }
 
 function group_add_user_to_group() {
-    
-	USERTOBEADDED=$(dialog --title "User to be added" \
-	--inputbox "Enter user to be added:" \
-	15 25 \
-	2>&1 >/dev/tty)
-	
-	GROUPTOBEADDEDTO=$(dialog --title "Group to be added to" \
-	--inputbox "Enter group to be added to:" \
-	15 25 \
-	2>&1 >dev/tty)
+
+    USERTOBEADDED=$(dialog --backtitle "GROUP MENU" \
+        --title "ADD USER TO GROUP" \
+        --inputbox "Enter user to be added:" \
+        15 0 \
+        2>&1 >/dev/tty) 
+
+    USERTOBEADDED=$(dialog --backtitle "GROUP MENU" \
+        --title "SELECT GROUP" \
+        --inputbox "Enter group to be added to:" \
+        15 0 \
+        2>&1 >/dev/tty) 
 
 	if sudo usermod -a -G "$GROUPTOBEADDEDTO" "$USERTOBEADDED" > /dev/null 2>&1; then
 		dialog --title "Something" \
