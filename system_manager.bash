@@ -240,7 +240,7 @@ function group_user_view() {
 function group_add_user_to_group() {
     
 	USERTOBEADDED=$(dialog --title "User to be added" \
-	inputbox "Enter user to be added:" \
+	--inputbox "Enter user to be added:" \
 	15 25 \
 	2>&1 >/dev/tty)
 	
