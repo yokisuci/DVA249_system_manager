@@ -14,14 +14,13 @@
 
 function main_menu() {
 
-    CHOICE=$(dialog --clear \
-        --title "SYSTEM MANAGER" \
+    CHOICE=$(dialog --title "SYSTEM MANAGER" \
         --menu "Select an option" \
-        15 0 5 \
         n "Network Information" \
         g "Group Management" \
         u "User Management" \
         f "Folder Management" \
+        15 0 5 \
         2>&1 >/dev/tty) 
 
     case $CHOICE in
@@ -46,13 +45,12 @@ function main_menu() {
 
 function network_info() {
     
-    CHOICE=$(dialog --clear \
-    	--title "NETWORK INFO" \
+    CHOICE=$(dialog --title "NETWORK INFO" \
         --menu "Select an option" \
-        15 0 4\
         a "Return to main menu" \
         b "Print computer name"\
         c "Print all network devices name"\
+        15 0 4\
         2>&1 >/dev/tty)
 
     RETURN_CODE=$? 
@@ -122,15 +120,14 @@ function name_network_interfaces(){
 
 function group_menu() {
 
-    CHOICE=$(dialog --clear \
-        --title "GROUP MENU" \
+    CHOICE=$(dialog --title "GROUP MENU" \
         --menu "Select an option" \
         15 0 6 \
         a "Add Group" \
         l "List Group" \
         v "List User Group" \
         m "Add user to group" \
-	i "Delete user from group" \
+	    i "Delete user from group" \
         d "Delete Group" \
         2>&1 >/dev/tty) 
 
@@ -168,24 +165,19 @@ function group_menu() {
 function group_add() {
     
 
-	GROUPADD=$(dialog --clear \
-		--title "ADD GROUP" \
+	GROUPADD=$(dialog --title "ADD GROUP" \
 		--inputbox "Enter a group name" \
 		15 0 \
 		2>&1 >/dev/tty)
 
 	if groupadd "$GROUPADD" > /dev/null 2>&1; then
-		GROUPCHOICE=$(dialog --clear \
-			--title "GROUP CREATED" \
+		dialog  --title "GROUP CREATED" \
 			--msgbox "Created group '$GROUPADD'" \
-			15 0 \
-			2>&1 >/dev/tty)
+			15 0
 	else
-		GROUPCHOICE=$(dialog --clear \
-			--title "Error" \
+	     dialog --title "Error" \
 			--msgbox "Group already exists" \
-			15 25 \
-			2>&1 >/dev/tty)
+			15 25
 	fi
 
 
@@ -220,25 +212,20 @@ function group_list() {
 
 function group_user_view() {
     
-	SHOWGROUPUSERS=$(dialog --clear\
-	--title "List group members" \
+	SHOWGROUPUSERS=$(dialog --title "List group members" \
 	--inputbox "Enter a group name" \
         15 0\
 	2>&1 >/dev/tty)
 	
 	
 	if grep "$SHOWGROUPUSERS" /etc/group > /dev/null 2>&1; then
-		GROUPCHOICE=$(dialog --clear \
-			--title "Something" \
+		dialog --title "Something" \
 			--msgbox "$(grep "$SHOWGROUPUSERS" /etc/group)" \
-			15 0 \
-			2>&1 >/dev/tty)
+			15 0
 	else
-		GROUPCHOICE=$(dialog --clear \
-			--title "Error" \
+	    dialog --title "Error" \
 			--msgbox "No such group exists" \
-			15 25 \
-			2>&1 >/dev/tty)
+			15 25
 	fi
 
 
@@ -252,29 +239,24 @@ function group_user_view() {
 
 function group_add_user_to_group() {
     
-	USERTOBEADDED=$(dialog --clear\
-	--title "User to be added" \
+	USERTOBEADDED=$(dialog --title "User to be added" \
 	inputbox "Enter user to be added:" \
-	15 25\
+	15 25 \
 	2>&1 >/dev/tty)
 	
-	GROUPTOBEADDEDTO=$(dialog --clear\
-	--title "Group to be added to" \
+	GROUPTOBEADDEDTO=$(dialog --title "Group to be added to" \
 	--inputbox "Enter group to be added to:" \
-	15 25\
+	15 25 \
 	2>&1 >dev/tty)
 
 	if sudo usermod -a -G "$GROUPTOBEADDEDTO" "$USERTOBEADDED" > /dev/null 2>&1; then
-		GROUPCHOICE=$(dialog --clear \
-		--title "Something" \
-		--msgbox "'$USERTOBEADDED' was added to '$GROUPTOBEADDEDTO'"\
-		15 25\
-		2>&1 >/dev/tty)
-	else GROUPCHOICE=$(dialog --clear \
-		--title "Error" \
+		dialog --title "Something" \
+		--msgbox "'$USERTOBEADDED' was added to '$GROUPTOBEADDEDTO'" \
+		15 25
+	else
+        dialog --title "Error" \
 		--msgbox "Could not add user to group" \
-		15 25\
-		2>&1 >/dev/tty)
+		15 25
 	fi
 
 	
@@ -291,15 +273,13 @@ function group_add_user_to_group() {
 
 function group_delete_user_from_group(){
 
-	USERTOBEREMOVED=$(dialog --clear\
-	--title "User to be removed" \
+	USERTOBEREMOVED=$(dialog --title "User to be removed" \
 	--inputbox "Enter user to be removed:" \
 	15 25\
 	2>&1 >/dev/tty)
 
 
-	GROUPTOBEREMOVEDFROM=$(dialog --clear\
-	--title "Group to be removed from" \
+	GROUPTOBEREMOVEDFROM=$(dialog --title "Group to be removed from" \
 	--inputbox "Enter witch group to remove the user from:" \
 	15 25\
 	2>&1 >/dev/tty)
@@ -307,16 +287,13 @@ function group_delete_user_from_group(){
 
 
 	if sudo deluser "$USERTOBEREMOVED" "$GROUPTOBEREMOVEDFROM" > /dev/null 2>&1; then
-		GROUPCHOICE=$(dialog --clear \
-		--title "Something" \
+		dialog --title "Something" \
 		--msgbox "'$USERTOBEREMOVED' was removed from '$GROUPTOBEREMOVEDFROM'"\
-		15 25 \
-		2>&1 >/dev/tty)
-	else GROUPCHOICE=$(dialog --clear \
-		--title "Error" \
+		15 25
+	else 
+        dialog --title "Error" \
 		--msgbox "Could not remove user from group" \
-		15 25 \
-		2>&1 >/dev/tty)
+		15 25
 	fi
 
 	RETURN_CODE=$?
@@ -329,24 +306,19 @@ function group_delete_user_from_group(){
 
 function group_delete() {
     
-	GROUPDELETE=$(dialog --clear\
-		--title "Delete group" \
+	GROUPDELETE=$(dialog --title "Delete group" \
 		--inputbox "Enter a group to delete" \
 		15 25\
 		2>&1 >/dev/tty)
 
 	if sudo groupdel "$GROUPDELETE" > /dev/null 2>&1; then
-		GROUPCHOICE=$(dialog --clear \
-			--title "Something" \
+		dialog --title "Something" \
 			--msgbox "'$GROUPDELETE' was deleted"\
-			15 0 \
-			2>&1 >/dev/tty)
+			15 0
 	else 
-		GROUPCHOICE=$(dialog --clear \
-			--title "Error" \
+		dialog --title "Error" \
 			--msgbox "No group to delete" \
-			15 25 \
-			2>&1 >/dev/tty)
+			15 25
 	fi
 	
 	
@@ -368,8 +340,7 @@ function group_delete() {
 
 function user_menu() {
 
-    CHOICE=$(dialog --clear \
-        --backtitle "MAIN MENU" \
+    CHOICE=$(dialog --backtitle "MAIN MENU" \
         --title "USER MENU" \
         --menu "Select an option" \
         15 0 5 \
@@ -410,8 +381,7 @@ function user_menu() {
 
 function user_add() {
 	
-    FULLNAME=$(dialog --clear \
-        --backtitle "USER MENU" \
+    FULLNAME=$(dialog --backtitle "USER MENU" \
         --title "FULLNAME" \
         --inputbox "Enter your full name" \
         15 0 \
@@ -424,8 +394,7 @@ function user_add() {
         user_menu
     fi
 
-    USERNAME=$(dialog --clear \
-        --backtitle "USER MENU" \
+    USERNAME=$(dialog --backtitle "USER MENU" \
         --title "USERNAME" \
         --inputbox "Enter a username" \
         15 0 \
@@ -438,8 +407,7 @@ function user_add() {
         user_menu
     fi
 
-    PASSWORD=$(dialog --clear \
-        --title "PASSWORD" \
+    PASSWORD=$(dialog --title "PASSWORD" \
         --passwordbox "Enter a password" \
         15 0 \
         2>&1 >/dev/tty) 
@@ -452,20 +420,16 @@ function user_add() {
     fi
 
     if sudo useradd -m -p "$(openssl passwd -1 "$PASSWORD")" -c "$FULLNAME" "$USERNAME" > /dev/null 2>&1; then
-        CHOICE=$(dialog --clear \
-            --backtitle "USER MENU" \
+        dialog --backtitle "USER MENU" \
             --title "SUCESS" \
             --msgbox "Added user $USERNAME" \
-            15 0 \
-            2>&1 >/dev/tty) 
+            15 0
             user_menu
         else
-        CHOICE=$(dialog --clear \
-            --backtitle "USER MENU" \
+        dialog --backtitle "USER MENU" \
             --title "ERROR" \
             --msgbox "Something went wrong!" \
-            15 0 \
-            2>&1 >/dev/tty) 
+            15 0
             user_menu
     fi
   }
@@ -475,12 +439,10 @@ function user_add() {
 function user_list() {
 
     USER=$(getent passwd {1000..6000} | cut -d ':' -f 1)
-    CHOICE=$(dialog --clear \
-        --backtitle "USER MENU" \
+    dialog --backtitle "USER MENU" \
         --title "USERS" \
         --msgbox "$USER" \
-        15 0 \
-        2>&1 >/dev/tty) 
+        15 0
 
     RETURN_CODE=$?
     if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
@@ -494,8 +456,7 @@ function user_list() {
 
 function user_view() {
 
-    USER=$(dialog --clear \
-    --backtitle "USER MENU" \
+    USER=$(dialog --backtitle "USER MENU" \
     --title "USER VIEW" \
     --inputbox "Enter a user to view:" \
     15 0 \
@@ -504,8 +465,7 @@ function user_view() {
     # Check if user exist
     if id "$USER" &> /dev/null; then
 
-        CHOICE=$(dialog --clear \
-        --backtitle "USER MENU" \
+        CHOICE=$(dialog --backtitle "USER MENU" \
         --title "" \
         --menu "Select your information:" \
         15 0 5 \
@@ -530,12 +490,10 @@ function user_view() {
                 ;;
         esac
     else
-        CHOICE=$(dialog --clear \
-        --backtitle "USER MENU" \
+        dialog --backtitle "USER MENU" \
         --title "ERROR" \
         --msgbox "You've typed wrong username!" \
-        15 0 \
-        2>&1 >/dev/tty) 
+        15 0
         user_menu
     fi
 
@@ -543,8 +501,7 @@ function user_view() {
 
 function user_modify() {
 
-    USER=$(dialog --clear \
-    --backtitle "USER MENU" \
+    USER=$(dialog --backtitle "USER MENU" \
     --title "USER MODIFY" \
     --inputbox "Enter a user to modify:" \
     15 0 \
@@ -552,20 +509,16 @@ function user_modify() {
 
     # Check if user exist
     if id "$USER" &> /dev/null; then
-        CHOICE=$(dialog --clear \
-        --backtitle "USER MENU" \
+        dialog --backtitle "USER MENU" \
         --title "ERROR" \
         --msgbox "User exists!" \
-        15 0 \
-        2>&1 >/dev/tty) 
+        15 0
         user_menu
     else
-        CHOICE=$(dialog --clear \
-        --backtitle "USER MENU" \
+        dialog --backtitle "USER MENU" \
         --title "ERROR" \
         --msgbox "You've typed an invalid username!" \
-        15 0 \
-        2>&1 >/dev/tty) 
+        15 0
         user_menu
     fi
 
@@ -573,8 +526,7 @@ function user_modify() {
 
 function user_delete() {
 
-    USER=$(dialog --clear \
-    --backtitle "USER MENU" \
+    USER=$(dialog --backtitle "USER MENU" \
     --title "USER DELETE" \
     --inputbox "Enter a user to delete:" \
     15 0 \
@@ -583,21 +535,17 @@ function user_delete() {
     # Check if user exist
     if id "$USER" &> /dev/null; then
         if sudo userdel -r "$USER" &> /dev/null; then
-            CHOICE=$(dialog --clear \
-            --backtitle "USER MENU" \
+           dialog --backtitle "USER MENU" \
             --title "SUCCESS" \
             --msgbox "Removed $USER" \
-            15 0 \
-            2>&1 >/dev/tty) 
+            15 0
             user_menu
         fi
     else
-            CHOICE=$(dialog --clear \
-            --backtitle "USER MENU" \
+            dialog --backtitle "USER MENU" \
             --title "ERROR" \
             --msgbox "User doesn't!" \
-            15 0 \
-            2>&1 >/dev/tty) 
+            15 0
             user_menu
     fi
 
@@ -613,12 +561,10 @@ function user_passwd_list() {
     LOGIN_SHELL=$(getent passwd | grep "$USER" | cut -d ':' -f 7)
     COMPLETE_INFO="UID: $UID_PASSWD\nGID: $GID_PASSWD\nFullname: $FULLNAME\nHome dir: $HOME_DIR\nLogin shell: $LOGIN_SHELL\n"
 
-    CHOICE=$(dialog --clear \
-    --backtitle "USER MENU" \
+    dialog --backtitle "USER MENU" \
     --title "USERS" \
     --msgbox "$COMPLETE_INFO" \
-    15 0 \
-    2>&1 >/dev/tty) 
+    15 0
 
     RETURN_CODE=$?
     if [[ $RETURN_CODE == "$OK" ]]; then
@@ -631,12 +577,10 @@ function user_passwd_list() {
 
 function user_group_list() {
     USER=$(getent passwd {1000..6000} | cut -d ':' -f 1)
-    CHOICE=$(dialog --clear \
-        --backtitle "USER MENU" \
+    dialog --backtitle "USER MENU" \
         --title "USERS" \
         --msgbox "$USER" \
-        15 0 \
-        2>&1 >/dev/tty) 
+        15 0 
 }
 
 # ------------------------
@@ -645,8 +589,7 @@ function user_group_list() {
 
 function folder_menu() {
 
-    CHOICE=$(dialog --clear \
-        --title "FOLDER MENU" \
+    CHOICE=$(dialog --title "FOLDER MENU" \
         --menu "Select an option" \
         15 0 5 \
         a "Add Folder" \
@@ -685,45 +628,35 @@ function folder_menu() {
 
 function folder_add() {
 
-    FOLDER=$(dialog --clear \
-        --title "ADD FOLDER" \
+    FOLDER=$(dialog --title "ADD FOLDER" \
         --inputbox "Enter a folder name" \
         15 0 \
         2>&1 >/dev/tty) 
 
     if mkdir "$FOLDER" > /dev/null 2>&1; then
-        CHOICE=$(dialog --clear \
-        --title "FOLDER CREATED" \
+        dialog --title "FOLDER CREATED" \
         --msgbox "Created folder '$FOLDER'" \
-        15 0 \
-        2>&1 >/dev/tty) 
+        15 0
     else
-        CHOICE=$(dialog --clear \
-        --title "ERROR" \
+        dialog --title "ERROR" \
         --msgbox "Some kind of error!" \
-        15 0 \
-        2>&1 >/dev/tty) 
+        15 0
     fi
 
-    if [[ $CHOICE == "$DIALOG_OK" ]]; then
-        main_menu
-    fi
+    main_menu
 }
 
 function folder_list() {
 
-    DIR=$(dialog --clear \
-        --title "ADD FOLDER" \
+    DIR=$(dialog --title "ADD FOLDER" \
         --inputbox "Current working directory is $(pwd)\nEnter a folder name" \
         15 0 \
         2>&1 >/dev/tty) 
 
     if ls "$DIR" > /dev/null 2>&1; then
-        CHOICE=$(dialog --clear \
-        --title "FOLDER CONTENT" \
+        dialog --title "FOLDER CONTENT" \
         --msgbox "$CONTENT" \
-        15 0 \
-        2>&1 >/dev/tty) 
+        15 0
 
         RETURN_CODE=$?
         if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
@@ -733,11 +666,9 @@ function folder_list() {
         fi
 
     else
-        CHOICE=$(dialog --clear \
-        --title "ERROR" \
+        dialog --title "ERROR" \
         --msgbox "Folder does not exist!" \
-        15 0 \
-        2>&1 >/dev/tty) 
+        15 0
 
         RETURN_CODE=$?
         if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
@@ -750,18 +681,15 @@ function folder_list() {
 }
 
 function folder_view() {
-   DIR=$(dialog --clear \
-   --title "DELETE A FOLDER" \
+   DIR=$(dialog --title "DELETE A FOLDER" \
    --inputbox "What folder do you want to view?" \
    15 0 \
    2>&1 >/dev/tty) 
 
     if ls "$DIR" > /dev/null 2>&1; then
-        CHOICE=$(dialog --clear \
-        --title "VIEW FOLDER" \
+        dialog --title "VIEW FOLDER" \
         --msgbox "$CONTENT" \
-        15 0 \
-        2>&1 >/dev/tty) 
+        15 0
 
         RETURN_CODE=$?
         if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
@@ -771,11 +699,9 @@ function folder_view() {
         fi
 
     else
-        CHOICE=$(dialog --clear \
-        --title "ERROR" \
+        dialog --title "ERROR" \
         --msgbox "Folder does not exist!" \
-        15 0 \
-        2>&1 >/dev/tty) 
+        15 0
 
         RETURN_CODE=$?
         if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
@@ -793,18 +719,15 @@ function folder_modify() {
 }
 
 function folder_delete() {
-   DIR=$(dialog --clear \
-   --title "DELETE A FOLDER" \
+   DIR=$(dialog --title "DELETE A FOLDER" \
    --inputbox "What folder do you want to delete?" \
    15 0 \
    2>&1 >/dev/tty) 
 
-    if rm -rf "$DIR" > /dev/null 2>&1; then
-        CHOICE=$(dialog --clear \
-        --title "FOLDER DELETED" \
+    if rmdir "$DIR" > /dev/null 2>&1; then
+        dialog --title "FOLDER DELETED" \
         --msgbox "$DIR deleted" \
-        15 0 \
-        2>&1 >/dev/tty) 
+        15 0
 
         RETURN_CODE=$?
         if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
@@ -814,11 +737,9 @@ function folder_delete() {
         fi
 
     else
-        CHOICE=$(dialog --clear \
-        --title "ERROR" \
+        dialog --title "ERROR" \
         --msgbox "Folder does not exist!" \
-        15 0 \
-        2>&1 >/dev/tty) 
+        15 0
 
         RETURN_CODE=$?
         if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
