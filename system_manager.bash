@@ -14,13 +14,14 @@
 
 function main_menu() {
 
-    CHOICE=$(dialog --title "SYSTEM MANAGER" \
+    CHOICE=$(dialog --clear \
+	--title "SYSTEM MANAGER" \
         --menu "Select an option" \
+	15 0 5 \
         n "Network Information" \
         g "Group Management" \
         u "User Management" \
         f "Folder Management" \
-        15 0 5 \
         2>&1 >/dev/tty) 
 
     case $CHOICE in
