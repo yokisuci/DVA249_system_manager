@@ -153,8 +153,8 @@ function group_menu() {
             m)
                 group_add_user_to_group
                 ;;
-	    i)
-		group_delete_user_from_group
+            i)
+            group_delete_user_from_group
 		;;
             d)
                 group_delete
@@ -164,7 +164,6 @@ function group_menu() {
 }
 
 function group_add() {
-    
 
 	GROUPADD=$(dialog --title "ADD GROUP" \
 		--inputbox "Enter a group name" \
@@ -180,8 +179,6 @@ function group_add() {
 			--msgbox "Group already exists" \
 			15 25
 	fi
-
-
 	
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
@@ -262,10 +259,6 @@ function group_add_user_to_group() {
 		15 25
 	fi
 
-	
-	
-	
-
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
 		main_menu
@@ -286,8 +279,6 @@ function group_delete_user_from_group(){
 	--inputbox "Enter witch group to remove the user from:" \
 	15 25\
 	2>&1 >/dev/tty)
-
-
 
 	if sudo deluser "$USERTOBEREMOVED" "$GROUPTOBEREMOVEDFROM" > /dev/null 2>&1; then
 		dialog --title "Something" \
@@ -323,8 +314,6 @@ function group_delete() {
 			--msgbox "No group to delete" \
 			15 25
 	fi
-	
-	
 
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
@@ -334,8 +323,6 @@ function group_delete() {
 	fi
 
 }
-
-
 
 # ----------------------
 # --- USER FUNCTIONS ---
@@ -435,9 +422,7 @@ function user_add() {
             15 0
             user_menu
     fi
-  }
-
-
+}
 
 function user_list() {
 
@@ -553,7 +538,6 @@ function user_delete() {
     fi
 
 }
-
 
 function user_passwd_list() {
 
