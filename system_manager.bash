@@ -170,20 +170,25 @@ function group_add() {
 		15 0 \
 		2>&1 >/dev/tty)
 
-	if groupadd "$GROUPADD" > /dev/null 2>&1; then
-		dialog  --title "GROUP CREATED" \
-			--msgbox "Created group '$GROUPADD'" \
-			15 0
-	else
-	     dialog --title "Error" \
-			--msgbox "Group already exists" \
-			15 25
-	fi
-	
-	RETURN_CODE=$?
-	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
-		main_menu
-	elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
+    RETURN_CODE=$?
+    if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
+        groupadd "$GROUPADD" > /dev/null 2>&1
+        RETURN_CODE=$?
+        if [[ $RETURN_CODE == 0 ]]; then
+            dialog  --title "GROUP CREATED" \
+                --msgbox "Created group '$GROUPADD'" \
+                15 0
+		        group_menu
+        elif [[ $RETURN_CODE == 9 ]]; then
+            dialog --title "Error" \
+                --msgbox "Group already exists" \
+                15 0
+		        group_menu
+        elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
+                group_menu
+        fi
+
+    else
 		group_menu
 	fi
 }
@@ -215,24 +220,26 @@ function group_user_view() {
         15 0\
 	2>&1 >/dev/tty)
 	
-	
-	if grep "$SHOWGROUPUSERS" /etc/group > /dev/null 2>&1; then
-		dialog --title "Something" \
-			--msgbox "$(grep "$SHOWGROUPUSERS" /etc/group)" \
-			15 0
-	else
-	    dialog --title "Error" \
-			--msgbox "No such group exists" \
-			15 25
-	fi
-
-
 	RETURN_CODE=$?
-	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
-		main_menu
-	elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
-		group_menu
-	fi
+    if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
+        grep "$SHOWGROUPUSERS" /etc/group > /dev/null 2>&1
+    	RETURN_CODE=$?
+        if [[ $RETURN_CODE == 0 ]]; then
+            dialog --title "Something" \
+                --msgbox "$(grep "$SHOWGROUPUSERS" /etc/group)" \
+                15 0
+            group_menu
+        elif [[ $RETURN_CODE == 0 ]]; then
+            dialog --title "Error" \
+                --msgbox "No such group exists" \
+                15 25
+            group_menu
+        elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
+            group_menu
+        fi
+    else
+        group_menu
+    fi
 }
 
 function group_add_user_to_group() {
@@ -243,21 +250,40 @@ function group_add_user_to_group() {
         15 0 \
         2>&1 >/dev/tty) 
 
-    USERTOBEADDED=$(dialog --backtitle "GROUP MENU" \
-        --title "SELECT GROUP" \
-        --inputbox "Enter group to be added to:" \
-        15 0 \
-        2>&1 >/dev/tty) 
+	RETURN_CODE=$?
+    if [[ $RETURN_CODE == 0 ]]; then
 
-	if sudo usermod -a -G "$GROUPTOBEADDEDTO" "$USERTOBEADDED" > /dev/null 2>&1; then
-		dialog --title "Something" \
-		--msgbox "'$USERTOBEADDED' was added to '$GROUPTOBEADDEDTO'" \
-		15 25
-	else
-        dialog --title "Error" \
-		--msgbox "Could not add user to group" \
-		15 25
-	fi
+        GROUPTOBEADDEDTO=$(dialog --backtitle "GROUP MENU" \
+            --title "SELECT GROUP" \
+            --inputbox "Enter group to be added to:" \
+            15 0 \
+            2>&1 >/dev/tty) 
+
+	    RETURN_CODE=$?
+        if [[ $RETURN_CODE == 0 ]]; then
+
+            usermod -a -G "$GROUPTOBEADDEDTO" "$USERTOBEADDED" > /dev/null 2>&1
+	        RETURN_CODE=$?
+            if [[ $RETURN_CODE == 0 ]]; then
+                dialog --title "Something" \
+                --msgbox "'$USERTOBEADDED' was added to '$GROUPTOBEADDEDTO'" \
+                15 25
+            elif [[ $RETURN_CODE == 6 ]]; then
+                dialog --title "Error" \
+                --msgbox "Could not add user to group" \
+                15 25
+            elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
+                group_menu
+            fi
+
+        else
+            group_menu
+        fi
+    else
+        group_menu
+    fi
+
+
 
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
@@ -409,7 +435,7 @@ function user_add() {
         user_menu
     fi
 
-    if sudo useradd -m -p "$(openssl passwd -1 "$PASSWORD")" -c "$FULLNAME" "$USERNAME" > /dev/null 2>&1; then
+    if useradd -m -p "$(openssl passwd -1 "$PASSWORD")" -c "$FULLNAME" "$USERNAME" > /dev/null 2>&1; then
         dialog --backtitle "USER MENU" \
             --title "SUCESS" \
             --msgbox "Added user $USERNAME" \
