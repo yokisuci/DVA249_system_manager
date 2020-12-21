@@ -269,7 +269,7 @@ function group_add_user_to_group() {
                 dialog --title "Error" \
                 --msgbox "Could not add user to group" \
                 15 25
-            elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
+            else
                 group_menu
             fi
 
@@ -297,54 +297,75 @@ function group_delete_user_from_group(){
 	15 25\
 	2>&1 >/dev/tty)
 
-
-	GROUPTOBEREMOVEDFROM=$(dialog --title "Group to be removed from" \
-	--inputbox "Enter witch group to remove the user from:" \
-	15 25\
-	2>&1 >/dev/tty)
-
-	if sudo deluser "$USERTOBEREMOVED" "$GROUPTOBEREMOVEDFROM" > /dev/null 2>&1; then
-		dialog --title "Something" \
-		--msgbox "'$USERTOBEREMOVED' was removed from '$GROUPTOBEREMOVEDFROM'"\
-		15 25
-	else 
-        dialog --title "Error" \
-		--msgbox "Could not remove user from group" \
-		15 25
-	fi
-
 	RETURN_CODE=$?
-	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
-		main_menu
-	elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
-		group_menu
-	fi
+    if [[ $RETURN_CODE == 0 ]]; then
+
+        GROUPTOBEREMOVEDFROM=$(dialog --title "Group to be removed from" \
+        --inputbox "Enter witch group to remove the user from:" \
+        15 25\
+        2>&1 >/dev/tty)
+
+	    RETURN_CODE=$?
+        if [[ $RETURN_CODE == 0 ]]; then
+
+            gpasswd -d "$USERTOBEREMOVED" "$GROUPTOBEREMOVEDFROM"
+	        RETURN_CODE=$?
+
+            if [[ $RETURN_CODE == 0 ]]; then
+
+                dialog --title "Something" \
+                --msgbox "'$USERTOBEREMOVED' was removed from '$GROUPTOBEREMOVEDFROM'"\
+                15 25
+                group_menu
+
+            elif [[ $RETURN_CODE == 3 ]]; then
+
+                dialog --title "Error" \
+                --msgbox "Could not remove user from group" \
+                15 25
+                group_menu
+            else
+                group_menu
+            fi
+        else
+            group_menu
+        fi
+    else
+        group_menu
+    fi
 }
 
 function group_delete() {
     
-	GROUPDELETE=$(dialog --title "Delete group" \
-		--inputbox "Enter a group to delete" \
-		15 25\
-		2>&1 >/dev/tty)
+GROUPDELETE=$(dialog --title "Delete group" \
+    --inputbox "Enter a group to delete" \
+    15 25\
+    2>&1 >/dev/tty)
 
-	if sudo groupdel "$GROUPDELETE" > /dev/null 2>&1; then
-		dialog --title "Something" \
-			--msgbox "'$GROUPDELETE' was deleted"\
-			15 0
-	else 
-		dialog --title "Error" \
-			--msgbox "No group to delete" \
-			15 25
-	fi
-
-	RETURN_CODE=$?
-	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
-		main_menu
-	elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
-		group_menu
-	fi
-
+RETURN_CODE=$?
+    if [[ $RETURN_CODE == 0 ]]; then
+        groupdel "$GROUPDELETE"
+	    RETURN_CODE=$?
+        if [[ $RETURN_CODE == 0 ]]; then
+            dialog --title "Something" \
+                --msgbox "'$GROUPDELETE' was deleted"\
+                15 0
+            group_menu
+        elif [[ $RETURN_CODE == 8 ]]; then
+            dialog --title "Error" \
+                --msgbox "You cannot delete the primary group for $USER" \
+                15 25
+        elif [[ $RETURN_CODE == 6 ]]; then
+            dialog --title "Error" \
+                --msgbox "No group to delete" \
+                15 25
+            group_menu
+        else
+            group_menu
+        fi
+    else
+        group_menu
+    fi
 }
 
 # ----------------------
