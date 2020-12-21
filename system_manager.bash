@@ -643,12 +643,7 @@ function folder_menu() {
         2>&1 >/dev/tty) 
 
     RETURN_CODE=$?
-    if [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
-        main_menu
-    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
-        folder_menu
-    fi
-
+    if [[ $RETURN_CODE == 0 ]]; then
         clear
         case $CHOICE in
             a)
@@ -667,6 +662,11 @@ function folder_menu() {
                 folder_delete
                 ;;
         esac
+    elif [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
+        main_menu
+    else
+        folder_menu
+    fi
 }
 
 function folder_add() {
@@ -676,17 +676,23 @@ function folder_add() {
         15 0 \
         2>&1 >/dev/tty) 
 
-    if mkdir "$FOLDER" > /dev/null 2>&1; then
-        dialog --title "FOLDER CREATED" \
-        --msgbox "Created folder '$FOLDER'" \
-        15 0
+    RETURN_CODE=$?
+    if [[ $RETURN_CODE == 0 ]]; then
+        if mkdir "$FOLDER" > /dev/null 2>&1; then
+            dialog --title "FOLDER CREATED" \
+            --msgbox "Created folder '$FOLDER'" \
+            15 0
+            folder_menu
+        else
+            dialog --title "ERROR" \
+            --msgbox "Couldn't create folder!" \
+            15 0
+            folder_menu
+        fi
     else
-        dialog --title "ERROR" \
-        --msgbox "Some kind of error!" \
-        15 0
+        main_menu
     fi
 
-    main_menu
 }
 
 function folder_list() {
@@ -729,31 +735,24 @@ function folder_view() {
    15 0 \
    2>&1 >/dev/tty) 
 
-    if ls "$DIR" > /dev/null 2>&1; then
-        dialog --title "VIEW FOLDER" \
-        --msgbox "$CONTENT" \
-        15 0
-
+   RETURN_CODE=$?
+   if [[ $RETURN_CODE == 0 ]]; then
+        ls "$DIR"
         RETURN_CODE=$?
-        if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
+        if [[ $RETURN_CODE == 0 ]]; then
+            dialog --title "VIEW FOLDER" \
+            --msgbox "$CONTENT" \
+            15 0
             folder_menu
-        elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
-            sleep 0
-        fi
-
-    else
-        dialog --title "ERROR" \
-        --msgbox "Folder does not exist!" \
-        15 0
-
-        RETURN_CODE=$?
-        if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
-            folder_menu
-        elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
+        else
+            dialog --title "ERROR" \
+            --msgbox "Folder does not exist!" \
+            15 0
             folder_menu
         fi
-
-    fi
+   else
+        folder_menu
+   fi
 
 }
 
@@ -767,32 +766,24 @@ function folder_delete() {
    15 0 \
    2>&1 >/dev/tty) 
 
-    if rmdir "$DIR" > /dev/null 2>&1; then
-        dialog --title "FOLDER DELETED" \
-        --msgbox "$DIR deleted" \
-        15 0
-
+   RETURN_CODE=$?
+   if [[ $RETURN_CODE == 0 ]]; then
+        rmdir "$DIR"
         RETURN_CODE=$?
-        if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
+        if [[ $RETURN_CODE == 0 ]]; then
+            dialog --title "FOLDER DELETED" \
+            --msgbox "$DIR deleted" \
+            15 0
             folder_menu
-        elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
+        else
+            dialog --title "ERROR" \
+            --msgbox "Folder does not exist!" \
+            15 0
             folder_menu
         fi
-
     else
-        dialog --title "ERROR" \
-        --msgbox "Folder does not exist!" \
-        15 0
-
-        RETURN_CODE=$?
-        if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
-            folder_menu
-        elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
-            folder_menu
-        fi
-
+        folder_menu
     fi
-
 }
 
 if [[ $EUID == 0 ]]; then
