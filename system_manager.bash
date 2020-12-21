@@ -422,49 +422,48 @@ function user_add() {
         2>&1 >/dev/tty) 
 
     RETURN_CODE=$?
-    if [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
-        user_menu
-    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
-        user_menu
-    fi
+    if [[ $RETURN_CODE == 0 ]]; then
 
-    USERNAME=$(dialog --backtitle "USER MENU" \
-        --title "USERNAME" \
-        --inputbox "Enter a username" \
-        15 0 \
-        2>&1 >/dev/tty) 
+        USERNAME=$(dialog --backtitle "USER MENU" \
+            --title "USERNAME" \
+            --inputbox "Enter a username" \
+            15 0 \
+            2>&1 >/dev/tty) 
+        RETURN_CODE=$?
+        if [[ $RETURN_CODE == 0 ]]; then
 
-    RETURN_CODE=$?
-    if [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
-        user_menu
-    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
-        user_menu
-    fi
+            PASSWORD=$(dialog --title "PASSWORD" \
+                --passwordbox "Enter a password" \
+                15 0 \
+                2>&1 >/dev/tty) 
+            RETURN_CODE=$?
+            if [[ $RETURN_CODE == 0 ]]; then
 
-    PASSWORD=$(dialog --title "PASSWORD" \
-        --passwordbox "Enter a password" \
-        15 0 \
-        2>&1 >/dev/tty) 
-
-    RETURN_CODE=$?
-    if [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
-        user_menu
-    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
-        user_menu
-    fi
-
-    if useradd -m -p "$(openssl passwd -1 "$PASSWORD")" -c "$FULLNAME" "$USERNAME" > /dev/null 2>&1; then
-        dialog --backtitle "USER MENU" \
-            --title "SUCESS" \
-            --msgbox "Added user $USERNAME" \
-            15 0
-            user_menu
+                useradd -m -p "$(openssl passwd -1 "$PASSWORD")" -c "$FULLNAME" "$USERNAME"
+                RETURN_CODE=$?
+                if [[ $RETURN_CODE == 0 ]]; then
+                    dialog --backtitle "USER MENU" \
+                        --title "SUCESS" \
+                        --msgbox "Added user $USERNAME" \
+                        15 0
+                        user_menu
+                    elif [[ $RETURN_CODE == 9 ]]; then
+                    dialog --backtitle "USER MENU" \
+                        --title "ERROR" \
+                        --msgbox "A user or group with that name already exists" \
+                        15 0
+                        user_menu
+                    else
+                        user_menu
+                fi
+            else
+                user_menu
+            fi
         else
-        dialog --backtitle "USER MENU" \
-            --title "ERROR" \
-            --msgbox "Something went wrong!" \
-            15 0
             user_menu
+        fi
+    else
+        user_menu
     fi
 }
 
@@ -494,38 +493,45 @@ function user_view() {
     15 0 \
     2>&1 >/dev/tty) 
 
-    # Check if user exist
-    if id "$USER" &> /dev/null; then
+    RETURN_CODE=$?
+    if [[ $RETURN_CODE == 0 ]]; then
 
-        CHOICE=$(dialog --backtitle "USER MENU" \
-        --title "" \
-        --menu "Select your information:" \
-        15 0 5 \
-        a "Attributes from /etc/passwd" \
-        g "Groups" \
-        2>&1 >/dev/tty) 
-
+        id "$USER" &> /dev/nul
         RETURN_CODE=$?
-        if [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
-            main_menu
-        elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
-            user_menu
-        fi
+        if [[ $RETURN_CODE == 0 ]]; then
 
-        clear
-        case $CHOICE in
-            a)
-                user_passwd_list
-                ;;
-            g)
-                user_group_list
-                ;;
-        esac
-    else
+            CHOICE=$(dialog --backtitle "USER MENU" \
+            --title "" \
+            --menu "Select your information:" \
+            15 0 5 \
+            a "Attributes from /etc/passwd" \
+            g "Groups" \
+            2>&1 >/dev/tty) 
+
+            RETURN_CODE=$?
+            if [[ $RETURN_CODE == 0 ]]; then
+                clear
+                case $CHOICE in
+                    a)
+                        user_passwd_list
+                        ;;
+                    g)
+                        user_group_list
+                        ;;
+                esac
+            elif [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
+                main_menu
+            elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
+                user_menu
+            fi
+        fi
+    elif [[ $RETURN_CODE == 1 ]]; then
         dialog --backtitle "USER MENU" \
         --title "ERROR" \
         --msgbox "You've typed wrong username!" \
         15 0
+        user_menu
+    else
         user_menu
     fi
 
@@ -598,12 +604,11 @@ function user_passwd_list() {
     15 0
 
     RETURN_CODE=$?
-    if [[ $RETURN_CODE == "$OK" ]]; then
-        main_menu
+    if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
+        user_menu
     elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
         user_menu
     fi
-
 }
 
 function user_group_list() {
@@ -612,6 +617,13 @@ function user_group_list() {
         --title "USERS" \
         --msgbox "$USER" \
         15 0 
+
+    RETURN_CODE=$?
+    if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
+        user_menu
+    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
+        user_menu
+    fi
 }
 
 # ------------------------
