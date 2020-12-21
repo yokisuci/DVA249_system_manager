@@ -50,8 +50,7 @@ function network_info() {
         --menu "Select an option" \
         15 0 4 \
         a "Return to main menu" \
-        b "Print computer name"\
-        c "Print all network devices name"\
+        b "Print all network devices name"\
         2>&1 >/dev/tty)
 
     RETURN_CODE=$? 
@@ -66,10 +65,7 @@ function network_info() {
 		a)
 		    main_menu
 		    ;;
-		b) 
-			computer_name
-			;;
-		c)
+		b)
 		    name_network_interfaces
 			;;
 	esac
@@ -91,7 +87,7 @@ function computer_name(){
 
 function name_network_interfaces(){
 	
-	
+	MYHOST=$(hostname)	
 	IP=$(hostname -I)
 	MAC=$(ip a | grep ether | cut -d " " -f6)
 	GATEWAY=$(ip -4 route show default | cut -d " " -f 3)
@@ -101,10 +97,11 @@ function name_network_interfaces(){
 	dialog --backtitle "network interfaces" \
 	--title "About" \
 	--msgbox "  Ip address:  $IP\n
+		Computer Name:  $MYHOST\n
 		Mac address:  $MAC\n
 		Gateway:  $GATEWAY\n
 		IP addr up:  $UP\n
-		IP addr down:  $DOWN" 10 40
+		IP addr down:  $DOWN" 10 45
 
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
