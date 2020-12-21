@@ -765,19 +765,17 @@ function folder_modify() {
 	    2>&1 >/dev/tty)
 
     RETURN_CODE=$?
-    if [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
-	    main_menu
-    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
+    if [[ $RETURN_CODE == 0 ]]; then
+        clear
+        case $MENU in 
+            a) folder_list_attributes
+                ;;
+            b) folder_change_attributes
+                ;;
+        esac
+    else
 	   folder_menu
     fi
-
-    clear
-    case $MENU in 
-	    a) folder_list_attributes
-		    ;;
-	    b) folder_change_attributes
-		    ;;
-    esac
 }
 
 function folder_list_attributes(){
@@ -787,25 +785,28 @@ function folder_list_attributes(){
 		15 0\
 		2>&1 >/dev/tty)
 
-
-	MYCOMMAND=$(ls -ld "$SHOWFOLDER")
-
-	if [[ -d $SHOWFOLDER ]]; then
-			dialog --msgbox "$MYCOMMAND" \
-			10 25
-	
 	RETURN_CODE=$?
-	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
-		main_menu
-	elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
-		folder_menu
-	fi
-	fi
+    if [[ $RETURN_CODE == 0 ]]; then
+        if [[ -d $SHOWFOLDER ]]; then
+            MYCOMMAND=$(ls -ld "$SHOWFOLDER")
+	        RETURN_CODE=$?
 
-}
-
-function folder_modify() {
-    sleep 0
+            if [[ $RETURN_CODE == 0 ]]; then
+                dialog --msgbox "$MYCOMMAND" \
+                10 25
+                folder_menu
+            else
+                folder_menu
+            fi
+        else
+         dialog --title "FOLDER DELETED" \
+            --msgbox "Folder doesn't exist" \
+            15 0
+            folder_menu
+        fi
+    else
+        folder_menu
+	fi
 }
 
 function folder_delete() {
