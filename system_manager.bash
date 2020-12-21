@@ -678,10 +678,14 @@ function folder_add() {
 
     RETURN_CODE=$?
     if [[ $RETURN_CODE == 0 ]]; then
-        if mkdir "$FOLDER" > /dev/null 2>&1; then
+        mkdir "$FOLDER"
+        RETURN_CODE=$?
+        if [[ $RETURN_CODE == 0 ]]; then
             dialog --title "FOLDER CREATED" \
             --msgbox "Created folder '$FOLDER'" \
             15 0
+            folder_menu
+        elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
             folder_menu
         else
             dialog --title "ERROR" \
@@ -702,30 +706,26 @@ function folder_list() {
         15 0 \
         2>&1 >/dev/tty) 
 
-    if ls "$DIR" > /dev/null 2>&1; then
-        dialog --title "FOLDER CONTENT" \
-        --msgbox "$CONTENT" \
-        15 0
+    RETURN_CODE=$?
+    if [[ $RETURN_CODE == 0 ]]; then
 
+        ls "$DIR"
         RETURN_CODE=$?
-        if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
-            main_menu
+        if [[ $RETURN_CODE == 0 ]]; then
+            dialog --title "FOLDER CONTENT" \
+            --msgbox "$CONTENT" \
+            15 0
+            folder_menu
         elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
             folder_menu
+        else
+            dialog --title "ERROR" \
+            --msgbox "Folder does not exist!" \
+            15 0
+            folder_menu
         fi
-
     else
-        dialog --title "ERROR" \
-        --msgbox "Folder does not exist!" \
-        15 0
-
-        RETURN_CODE=$?
-        if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
-            main_menu
-        elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
-            folder_menu
-        fi
-
+        folder_menu
     fi
 }
 
