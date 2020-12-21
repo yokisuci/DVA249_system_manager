@@ -757,6 +757,54 @@ function folder_view() {
 }
 
 function folder_modify() {
+    MENU=$(dialog --title "Folder modify menu" \
+	    --menu "Select an option" \
+	    15 0 2 \
+	    a "List attributes" \
+	    b " change attributes" \
+	    2>&1 >/dev/tty)
+
+    RETURN_CODE=$?
+    if [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
+	    main_menu
+    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
+	   folder_menu
+    fi
+
+    clear
+    case $MENU in 
+	    a) folder_list_attributes
+		    ;;
+	    b) folder_change_attributes
+		    ;;
+    esac
+}
+
+function folder_list_attributes(){
+
+	SHOWFOLDER=$(dialog --title "Show folder attributes" \
+		--inputbox "Enter a folder name:" \
+		15 0\
+		2>&1 >/dev/tty)
+
+
+	MYCOMMAND=$(ls -ld "$SHOWFOLDER")
+
+	if [[ -d $SHOWFOLDER ]]; then
+			dialog --msgbox "$MYCOMMAND" \
+			10 25
+	
+	RETURN_CODE=$?
+	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
+		main_menu
+	elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
+		folder_menu
+	fi
+	fi
+
+}
+
+function folder_modify() {
     sleep 0
 }
 
