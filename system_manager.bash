@@ -778,6 +778,40 @@ function folder_modify() {
     fi
 }
 
+function folder_edit_attributes(){
+
+	SHOWFOLDER=$(dialog --title "Edit folder attributes" \
+		--inputbox "Enter a folder name:" \
+		15 0\
+		2>&1 >/dev/tty)
+
+    RETURN_CODE=$?
+    if [[ $RETURN_CODE == 0 ]]; then
+
+        MENU=$(dialog --title "Folder modify menu" \
+            --menu "Select an option" \
+            15 0 2 \
+            p "Change permissions" \
+            2>&1 >/dev/tty)
+
+        RETURN_CODE=$?
+        if [[ $RETURN_CODE == 0 ]]; then
+            clear
+            case $MENU in 
+                p) folder_list_attributes
+                    ;;
+                b) folder_change_attributes
+                    ;;
+            esac
+        else
+           folder_menu
+        fi
+
+    else
+        folder_menu
+	fi
+}
+
 function folder_list_attributes(){
 
 	SHOWFOLDER=$(dialog --title "Show folder attributes" \
