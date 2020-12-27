@@ -819,15 +819,22 @@ function folder_list_attributes(){
 		15 0\
 		2>&1 >/dev/tty)
 
+
+
 	RETURN_CODE=$?
     if [[ $RETURN_CODE == 0 ]]; then
         if [[ -d $SHOWFOLDER ]]; then
-            MYCOMMAND=$(ls -ld "$SHOWFOLDER")
+
+	    MYCOMPLETECOMMAND=$(ls -ld "$SHOWFOLDER")
+	    TIME=$(ls -ls "$SHOWFOLDER" | awk '{print $7, $8, $9}')
+            OWNER=$(ls -ld "$SHOWFOLDER" | awk '{print $3}')
 	        RETURN_CODE=$?
 
-            if [[ $RETURN_CODE == 0 ]]; then
-                dialog --msgbox "$MYCOMMAND" \
-                10 25
+            if [[ $RETURN_CODE == 0 ]]; then 
+                dialog --msgbox "Owner is: $OWNER \n
+			The res is: $MYCOMPLETECOMMAND \n
+			The time is: $TIME" \
+                10 35
                 folder_menu
             else
                 folder_menu
