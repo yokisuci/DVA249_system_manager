@@ -93,6 +93,10 @@ function name_network_interfaces(){
 	GATEWAY=$(ip -4 route show default | cut -d " " -f 3)
 	UP=$(ip a | awk '/state UP/ {printf $2}')
 	DOWN=$(ip a | awk '/state DOWN/ {printf $2}')
+	NAMES=$(ls -1r /sys/class/net)
+	STATUS=$(ip link show | awk '{print $9}')
+	
+
 
 	dialog --backtitle "network interfaces" \
 	--title "About" \
@@ -101,7 +105,8 @@ function name_network_interfaces(){
 		Mac address:  $MAC\n
 		Gateway:  $GATEWAY\n
 		IP addr up:  $UP\n
-		IP addr down:  $DOWN" 10 45
+		IP addr down: $DOWN" \
+		10 45
 
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
