@@ -835,7 +835,7 @@ function change_owner() {
 
     RETURN_CODE=$?
     if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
-        chown $OWNER: $FOLDER
+        chown "$OWNER": "$FOLDER"
         RETURN_CODE=$?
         if [[ $RETURN_CODE == 0 ]]; then
             dialog --title "Changed owner" \
@@ -871,8 +871,8 @@ function change_sticky_bit() {
         if [[ $RETURN_CODE == 0 ]]; then
             clear
             case $MENU in 
-                s) chmod +t $FOLDER
-                    $RETURN_CODE == $?
+                s) chmod +t "$FOLDER"
+                    RETURN_CODE=$?
                     if [[ $RETURN_CODE == 0 ]]; then
                         dialog --title "Sticky" \
                         --msgbox "Sticky bit set" \
@@ -885,8 +885,8 @@ function change_sticky_bit() {
                        folder_menu 
                     fi
                     ;;
-                r) chmod -t $FOLDER
-                    $RETURN_CODE == $?
+                r) chmod -t "$FOLDER"
+                    RETURN_CODE=$?
                     if [[ $RETURN_CODE == 0 ]]; then
                         dialog --title "Sticky" \
                         --msgbox "Sticky bit removed" \
