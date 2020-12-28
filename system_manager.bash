@@ -834,7 +834,79 @@ function change_owner() {
 }
 
 function change_permissions() {
-    sleep 0
+    MENU=$(dialog --title "Set permissions" \
+        --menu "Choose option" \
+        15 0 2 \
+        sr "Set read permission" \
+        sw "Set write permission" \
+        rr "Remove read permission" \
+        rw "Remove write permission" \
+        2>&1 >/dev/tty)
+
+    RETURN_CODE=$?
+    if [[ $RETURN_CODE == 0 ]]; then
+        clear
+        case $MENU in 
+            sr) chmod +r "$FOLDER"
+                RETURN_CODE=$?
+                if [[ $RETURN_CODE == 0 ]]; then
+                    dialog --title "Set read" \
+                    --msgbox "Read permissions set" \
+                    15 0
+                    main_menu 
+                else
+                    dialog --title "Error" \
+                    --msgbox "Some kind of error" \
+                    15 0
+                    main_menu 
+                fi
+                ;;
+            sw) chmod +w "$FOLDER"
+                RETURN_CODE=$?
+                if [[ $RETURN_CODE == 0 ]]; then
+                    dialog --title "Set write" \
+                    --msgbox "Write permissions set" \
+                    15 0
+                    main_menu 
+                else
+                    dialog --title "Error" \
+                    --msgbox "Some kind of error" \
+                    15 0
+                    main_menu 
+                fi
+                ;;
+            rr) chmod -r "$FOLDER"
+                RETURN_CODE=$?
+                if [[ $RETURN_CODE == 0 ]]; then
+                    dialog --title "Remove read" \
+                    --msgbox "Read permissions removed" \
+                    15 0
+                    main_menu 
+                else
+                    dialog --title "Error" \
+                    --msgbox "Some kind of error" \
+                    15 0
+                    main_menu 
+                fi
+                ;;
+            rw) chmod -w "$FOLDER"
+                RETURN_CODE=$?
+                if [[ $RETURN_CODE == 0 ]]; then
+                    dialog --title "Remove write" \
+                    --msgbox "Write permissions Removed" \
+                    15 0
+                    main_menu 
+                else
+                    dialog --title "Error" \
+                    --msgbox "Some kind of error" \
+                    15 0
+                    main_menu 
+                fi
+                ;;
+        esac
+    else
+        folder_menu
+    fi
 }
 
 function change_sticky_bit() {
