@@ -989,7 +989,7 @@ function folder_list_attributes(){
         if [[ -d $SHOWFOLDER ]]; then
 
 	    MYCOMPLETECOMMAND=$(ls -ld "$SHOWFOLDER")
-	    TIME=$(ls -ls "$SHOWFOLDER" | awk '{print$7,$8,$9}')
+	    TIME=$(date +"%y%m%d %H:%M" -r "$SHOWFOLDER")
             OWNER=$(ls -ld "$SHOWFOLDER" | awk '{print $3}')
 	    if test -w $SHOWFOLDER; then
 		    WRITABLE="yes"
@@ -1018,14 +1018,14 @@ function folder_list_attributes(){
 	        RETURN_CODE=$?
             if [[ $RETURN_CODE == 0 ]]; then 
                 dialog --msgbox "\n
-			Owner is: $OWNER \n
+			Owner: $OWNER \n
 			Last time modified:$TIME \n
-			Permissions: \n
+			--- Permissions -- \n
 			Writable: $WRITABLE \n
 			Readable: $READABLE \n
 			Has sticky bit: $HASSTICKYBIT \n
 			Has set gid: $HASSETGID"  \
-                	10 40	
+                	15 45	
                 	folder_menu
             else
                 	folder_menu
