@@ -917,8 +917,8 @@ function change_setgid() {
         if [[ $RETURN_CODE == 0 ]]; then
             clear
             case $MENU in 
-                s) chmod g+s $FOLDER
-                    $RETURN_CODE == $?
+                s) chmod g+s "$FOLDER"
+                    RETURN_CODE=$?
                     if [[ $RETURN_CODE == 0 ]]; then
                         dialog --title "SetGID" \
                         --msgbox "SetGID set" \
@@ -931,8 +931,8 @@ function change_setgid() {
                        folder_menu 
                     fi
                     ;;
-                r) chmod g-s $FOLDER
-                    $RETURN_CODE == $?
+                r) chmod g-s "$FOLDER"
+                    RETURN_CODE=$?
                     if [[ $RETURN_CODE == 0 ]]; then
                         dialog --title "SetGID" \
                         --msgbox "SetGID removed" \
@@ -959,7 +959,7 @@ function change_last_modified() {
 
         RETURN_CODE=$?
         if [[ $RETURN_CODE == 0 ]]; then
-            touch -t $TIME $FOLDER
+            touch -t "$TIME" "$FOLDER"
             RETURN_CODE=$?
             if [[ $RETURN_CODE == 0 ]]; then
                 dialog --title "Changed modified" \
@@ -988,28 +988,27 @@ function folder_list_attributes(){
     if [[ $RETURN_CODE == 0 ]]; then
         if [[ -d $SHOWFOLDER ]]; then
 
-	    MYCOMPLETECOMMAND=$(ls -ld "$SHOWFOLDER")
 	    TIME=$(date +"%y%m%d %H:%M" -r "$SHOWFOLDER")
             OWNER=$(ls -ld "$SHOWFOLDER" | awk '{print $3}')
-	    if test -w $SHOWFOLDER; then
+	    if test -w "$SHOWFOLDER"; then
 		    WRITABLE="yes"
 	    else
 		    WRITABLE="no"
 	    fi
 
-	    if test -r $SHOWFOLDER; then
+	    if test -r "$SHOWFOLDER"; then
 		    READABLE="yes"
 	    else
 		    READABLE="no"
 	    fi
 
-	    if test -k $SHOWFOLDER; then
+	    if test -k "$SHOWFOLDER"; then
 		    HASSTICKYBIT="yes"
 	    else
 		    HASSTICKYBIT="no"
 	    fi
 
-	    if test -g $SHOWFOLDER; then
+	    if test -g "$SHOWFOLDER"; then
 		    HASSETGID="yes"
 	    else
 		    HASSETGID="no"
