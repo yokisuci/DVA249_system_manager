@@ -957,7 +957,29 @@ function change_setgid() {
 }
 
 function change_last_modified() {
-    sleep 0
+	TIME=$(dialog --title "Change modification time" \
+        --inputbox "Enter a new timestamp (YYMMhhmm):" \
+		15 0\
+		2>&1 >/dev/tty)
+
+        RETURN_CODE=$?
+        if [[ $RETURN_CODE == 0 ]]; then
+            touch -t $TIME $FOLDER
+            RETURN_CODE=$?
+            if [[ $RETURN_CODE == 0 ]]; then
+                dialog --title "Changed modified" \
+                --msgbox "Last modified is set to $TIME" \
+                15 0
+                folder_menu 
+            else
+                 dialog --title "Error" \
+                 --msgbox "Some kind of error" \
+                 15 0
+                 folder_menu 
+            fi
+        else
+            folder_menu
+        fi
 }
 
 function folder_list_attributes(){
