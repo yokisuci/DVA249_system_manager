@@ -24,6 +24,11 @@ function main_menu() {
         f "Folder Management" \
         2>&1 >/dev/tty) 
 
+    RETURN_CODE=$? 
+    if [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
+        EXIT=1
+    fi
+
     case $CHOICE in
         n)
             network_info
@@ -1067,7 +1072,10 @@ function folder_delete() {
 }
 
 if [[ $EUID == 0 ]]; then
-    main_menu
+    EXIT=0
+    while [[ $EXIT == 0 ]]; do
+        main_menu
+    done
 else
     echo "This script must run as root"
 fi
