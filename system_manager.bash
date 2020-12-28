@@ -765,17 +765,17 @@ function folder_modify() {
     MENU=$(dialog --title "Folder modify menu" \
 	    --menu "Select an option" \
 	    15 0 2 \
-	    a "List attributes" \
-	    b " change attributes" \
+	    l "List attributes" \
+	    e " edit attributes" \
 	    2>&1 >/dev/tty)
 
     RETURN_CODE=$?
     if [[ $RETURN_CODE == 0 ]]; then
         clear
         case $MENU in 
-            a) folder_list_attributes
+            l) folder_list_attributes
                 ;;
-            b) folder_change_attributes
+            e) folder_edit_attributes
                 ;;
         esac
     else
@@ -785,7 +785,7 @@ function folder_modify() {
 
 function folder_edit_attributes(){
 
-	SHOWFOLDER=$(dialog --title "Edit folder attributes" \
+	FOLDER=$(dialog --title "Edit folder attributes" \
 		--inputbox "Enter a folder name:" \
 		15 0\
 		2>&1 >/dev/tty)
@@ -796,16 +796,26 @@ function folder_edit_attributes(){
         MENU=$(dialog --title "Folder modify menu" \
             --menu "Select an option" \
             15 0 2 \
+            o "Change owner" \
             p "Change permissions" \
+            s "Change sticky bit" \
+            g "Change gid" \
+            m "Change last modified" \
             2>&1 >/dev/tty)
 
         RETURN_CODE=$?
         if [[ $RETURN_CODE == 0 ]]; then
             clear
             case $MENU in 
-                p) folder_list_attributes
+                o) change_owner
                     ;;
-                b) folder_change_attributes
+                p) change_permissions
+                    ;;
+                s) change_sticky_bit
+                    ;;
+                g) change_gid
+                    ;;
+                m) change_last_modified
                     ;;
             esac
         else
@@ -815,6 +825,26 @@ function folder_edit_attributes(){
     else
         folder_menu
 	fi
+}
+
+function change_owner() {
+    sleep 0
+}
+
+function change_permissions() {
+    sleep 0
+}
+
+function change_sticky_bit() {
+    sleep 0
+}
+
+function change_gid() {
+    sleep 0
+}
+
+function change_last_modified() {
+    sleep 0
 }
 
 function folder_list_attributes(){
