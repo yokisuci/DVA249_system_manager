@@ -819,26 +819,54 @@ function folder_list_attributes(){
 		15 0\
 		2>&1 >/dev/tty)
 
-
-
 	RETURN_CODE=$?
     if [[ $RETURN_CODE == 0 ]]; then
         if [[ -d $SHOWFOLDER ]]; then
 
 	    MYCOMPLETECOMMAND=$(ls -ld "$SHOWFOLDER")
-	    TIME=$(ls -ls "$SHOWFOLDER" | awk '{print $7, $8, $9}')
+	    TIME=$(ls -ls "$SHOWFOLDER" | awk '{print$7,$8,$9}')
             OWNER=$(ls -ld "$SHOWFOLDER" | awk '{print $3}')
+	    if test -w $SHOWFOLDER; then
+		    WRITABLE="yes"
+	    else
+		    WRITABLE="no"
+	    fi
+
+	    if test -r $SHOWFOLDER; then
+		    READABLE="yes"
+	    else
+		    READABLE="no"
+	    fi
+
+	    if test -k $SHOWFOLDER; then
+		    HASSTICKYBIT="yes"
+	    else
+		    HASSTICKYBIT="no"
+	    fi
+
+	    if test -g $SHOWFOLDER; then
+		    HASSETGID="yes"
+	    else
+		    HASSETGID="no"
+	    fi
+
+	  
 	        RETURN_CODE=$?
 
             if [[ $RETURN_CODE == 0 ]]; then 
-                dialog --msgbox "Owner is: $OWNER \n
-			The res is: $MYCOMPLETECOMMAND \n
-			The time is: $TIME" \
-                10 35
-                folder_menu
+                dialog --msgbox "\n
+			Owner is: $OWNER \n
+			Last time modified:$TIME \n
+			Permissions: \n
+			Writable: $WRITABLE \n
+			Readable: $READABLE \n
+			Has sticky bit: $HASSTICKYBIT \n
+			Has set gid: $HASSETGID"  \
+                	10 40	
+                	folder_menu
             else
-                folder_menu
-            fi
+                	folder_menu
+           fi
         else
          dialog --title "FOLDER DELETED" \
             --msgbox "Folder doesn't exist" \
