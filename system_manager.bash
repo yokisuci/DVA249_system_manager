@@ -766,7 +766,7 @@ function folder_modify() {
 	    --menu "Select an option" \
 	    15 0 2 \
 	    l "List attributes" \
-	    e " edit attributes" \
+	    e "Edit attributes" \
 	    2>&1 >/dev/tty)
 
     RETURN_CODE=$?
@@ -828,7 +828,31 @@ function folder_edit_attributes(){
 }
 
 function change_owner() {
-    sleep 0
+	OWNER=$(dialog --title "Set owner to folder" \
+		--inputbox "What owner do you want to set for the folder?" \
+		15 0\
+		2>&1 >/dev/tty)
+
+    RETURN_CODE=$?
+    if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
+        chown $OWNER: $FOLDER
+        RETURN_CODE=$?
+        if [[ $RETURN_CODE == 0 ]]; then
+            dialog --title "Changed owner" \
+                --msgbox "$FOLDER is now owned by $OWNER" \
+                15 0
+                folder_menu
+        else
+            dialog --title "Error" \
+               --msgbox "Something went wrong!" \
+               15 0
+               folder_menu
+        fi
+    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
+        folder_menu
+    elif [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
+        folder_menu
+    fi
 }
 
 function change_permissions() {
@@ -836,7 +860,51 @@ function change_permissions() {
 }
 
 function change_sticky_bit() {
-    sleep 0
+        MENU=$(dialog --title "Set sticky bit" \
+            --menu "Choose option" \
+            15 0 2 \
+            s "Set sticky bit" \
+            r "Remove sticky bit" \
+            2>&1 >/dev/tty)
+
+        RETURN_CODE=$?
+        if [[ $RETURN_CODE == 0 ]]; then
+            clear
+            case $MENU in 
+                s) chmod +t $FOLDER
+                    $RETURN_CODE == $?
+                    if [[ $RETURN_CODE == 0 ]]; then
+                        dialog --title "Sticky" \
+                        --msgbox "Sticky bit set" \
+                        15 0
+                       folder_menu 
+                    else
+                        dialog --title "Error" \
+                        --msgbox "Some kind of error" \
+                        15 0
+                       folder_menu 
+                    fi
+                    ;;
+                r) chmod -t $FOLDER
+                    $RETURN_CODE == $?
+                    if [[ $RETURN_CODE == 0 ]]; then
+                        dialog --title "Sticky" \
+                        --msgbox "Sticky bit removed" \
+                        15 0
+                       folder_menu 
+                    else
+                        dialog --title "Error" \
+                        --msgbox "Some kind of error" \
+                        15 0
+                       folder_menu 
+                    fi
+                    ;;
+            esac
+        else
+           folder_menu
+        fi
+
+        sleep 0
 }
 
 function change_gid() {
