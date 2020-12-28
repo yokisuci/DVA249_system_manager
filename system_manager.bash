@@ -90,7 +90,7 @@ function computer_name(){
 }
 
 
-function name_network_interfaces(){
+function network_info(){
 	
 	MYHOST=$(hostname)	
 	IP=$(hostname -I)
