@@ -156,8 +156,8 @@ function group_menu() {
                 group_add_user_to_group
                 ;;
             i)
-            group_delete_user_from_group
-		;;
+                group_delete_user_from_group
+		        ;;
             d)
                 group_delete
                 ;;
