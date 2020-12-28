@@ -819,12 +819,12 @@ function change_owner() {
             dialog --title "Changed owner" \
                 --msgbox "$FOLDER is now owned by $OWNER" \
                 15 0
-                folder_menu
+                main_menu
         else
             dialog --title "Error" \
                --msgbox "Something went wrong!" \
                15 0
-               folder_menu
+               main_menu
         fi
     elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
         folder_menu
@@ -860,7 +860,7 @@ function change_sticky_bit() {
                         dialog --title "Error" \
                         --msgbox "Some kind of error" \
                         15 0
-                       folder_menu 
+                       main_menu 
                     fi
                     ;;
                 r) chmod -t "$FOLDER"
@@ -874,7 +874,7 @@ function change_sticky_bit() {
                         dialog --title "Error" \
                         --msgbox "Some kind of error" \
                         15 0
-                       folder_menu 
+                       main_menu 
                     fi
                     ;;
             esac
@@ -906,7 +906,7 @@ function change_setgid() {
                         dialog --title "Error" \
                         --msgbox "Some kind of error" \
                         15 0
-                       folder_menu 
+                       main_menu 
                     fi
                     ;;
                 r) chmod g-s "$FOLDER"
@@ -920,7 +920,7 @@ function change_setgid() {
                         dialog --title "Error" \
                         --msgbox "Some kind of error" \
                         15 0
-                       folder_menu 
+                       main_menu 
                     fi
                     ;;
             esac
@@ -948,7 +948,7 @@ function change_last_modified() {
                  dialog --title "Error" \
                  --msgbox "Some kind of error" \
                  15 0
-                 folder_menu 
+                 main_menu 
             fi
         else
             folder_menu
@@ -1005,7 +1005,7 @@ function folder_list_attributes(){
                 	15 45	
                 	main_menu
             else
-                	folder_menu
+                	main_menu
            fi
         else
          dialog --title "FOLDER DELETED" \
@@ -1032,12 +1032,12 @@ function folder_delete() {
             dialog --title "FOLDER DELETED" \
             --msgbox "$DIR deleted" \
             15 0
-            folder_menu
+            main_menu
         else
             dialog --title "ERROR" \
             --msgbox "Folder does not exist!" \
             15 0
-            folder_menu
+            main_menu
         fi
     else
         folder_menu
