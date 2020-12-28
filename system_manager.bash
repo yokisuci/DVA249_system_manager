@@ -799,7 +799,7 @@ function folder_edit_attributes(){
             o "Change owner" \
             p "Change permissions" \
             s "Change sticky bit" \
-            g "Change gid" \
+            g "Change SetGID" \
             m "Change last modified" \
             2>&1 >/dev/tty)
 
@@ -813,7 +813,7 @@ function folder_edit_attributes(){
                     ;;
                 s) change_sticky_bit
                     ;;
-                g) change_gid
+                g) change_setgid
                     ;;
                 m) change_last_modified
                     ;;
@@ -907,7 +907,7 @@ function change_sticky_bit() {
         sleep 0
 }
 
-function change_gid() {
+function change_setgid() {
         MENU=$(dialog --title "Set SetGID" \
             --menu "Choose option" \
             15 0 2 \
