@@ -49,33 +49,6 @@ function main_menu() {
 # --- NETWORK INFORMATION ---
 # ---------------------------
 
-function network_info() {
-    
-    CHOICE=$(dialog --title "NETWORK INFO" \
-        --menu "Select an option" \
-        15 0 4 \
-        a "Return to main menu" \
-        b "Print all network devices name"\
-        2>&1 >/dev/tty)
-
-    RETURN_CODE=$? 
-    if [[ $RETURN_CODE == "$DIALOG_CANCEL" ]]; then
-        main_menu
-    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
-        network_info
-    fi
-
-	clear
-	case $CHOICE in 
-		a)
-		    main_menu
-		    ;;
-		b)
-		    name_network_interfaces
-			;;
-	esac
-}
-
 function computer_name(){
 	dialog --backtitle "Computer Name" \
 	--title "About" \
