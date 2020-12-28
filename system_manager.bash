@@ -689,7 +689,7 @@ function folder_add() {
             dialog --title "FOLDER CREATED" \
             --msgbox "Created folder '$FOLDER'" \
             15 0
-            folder_menu
+            main_menu
         elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
             folder_menu
         else
@@ -720,7 +720,7 @@ function folder_list() {
             dialog --title "FOLDER CONTENT" \
             --msgbox "$CONTENT" \
             15 0
-            folder_menu
+            main_menu
         elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
             folder_menu
         else
@@ -748,7 +748,7 @@ function folder_view() {
             dialog --title "VIEW FOLDER" \
             --msgbox "$CONTENT" \
             15 0
-            folder_menu
+            main_menu
         else
             dialog --title "ERROR" \
             --msgbox "Folder does not exist!" \
@@ -877,7 +877,7 @@ function change_sticky_bit() {
                         dialog --title "Sticky" \
                         --msgbox "Sticky bit set" \
                         15 0
-                       folder_menu 
+                       main_menu 
                     else
                         dialog --title "Error" \
                         --msgbox "Some kind of error" \
@@ -891,7 +891,7 @@ function change_sticky_bit() {
                         dialog --title "Sticky" \
                         --msgbox "Sticky bit removed" \
                         15 0
-                       folder_menu 
+                       main_menu 
                     else
                         dialog --title "Error" \
                         --msgbox "Some kind of error" \
@@ -923,7 +923,7 @@ function change_setgid() {
                         dialog --title "SetGID" \
                         --msgbox "SetGID set" \
                         15 0
-                       folder_menu 
+                       main_menu 
                     else
                         dialog --title "Error" \
                         --msgbox "Some kind of error" \
@@ -937,7 +937,7 @@ function change_setgid() {
                         dialog --title "SetGID" \
                         --msgbox "SetGID removed" \
                         15 0
-                       folder_menu 
+                       main_menu 
                     else
                         dialog --title "Error" \
                         --msgbox "Some kind of error" \
@@ -965,7 +965,7 @@ function change_last_modified() {
                 dialog --title "Changed modified" \
                 --msgbox "Last modified is set to $TIME" \
                 15 0
-                folder_menu 
+                main_menu 
             else
                  dialog --title "Error" \
                  --msgbox "Some kind of error" \
@@ -1025,7 +1025,7 @@ function folder_list_attributes(){
 			Has sticky bit: $HASSTICKYBIT \n
 			Has set gid: $HASSETGID"  \
                 	15 45	
-                	folder_menu
+                	main_menu
             else
                 	folder_menu
            fi
