@@ -908,6 +908,51 @@ function change_sticky_bit() {
 }
 
 function change_gid() {
+        MENU=$(dialog --title "Set SetGID" \
+            --menu "Choose option" \
+            15 0 2 \
+            s "Set SetGID" \
+            r "Remove SetGID" \
+            2>&1 >/dev/tty)
+
+        RETURN_CODE=$?
+        if [[ $RETURN_CODE == 0 ]]; then
+            clear
+            case $MENU in 
+                s) chmod g+s $FOLDER
+                    $RETURN_CODE == $?
+                    if [[ $RETURN_CODE == 0 ]]; then
+                        dialog --title "SetGID" \
+                        --msgbox "SetGID set" \
+                        15 0
+                       folder_menu 
+                    else
+                        dialog --title "Error" \
+                        --msgbox "Some kind of error" \
+                        15 0
+                       folder_menu 
+                    fi
+                    ;;
+                r) chmod g-s $FOLDER
+                    $RETURN_CODE == $?
+                    if [[ $RETURN_CODE == 0 ]]; then
+                        dialog --title "SetGID" \
+                        --msgbox "SetGID removed" \
+                        15 0
+                       folder_menu 
+                    else
+                        dialog --title "Error" \
+                        --msgbox "Some kind of error" \
+                        15 0
+                       folder_menu 
+                    fi
+                    ;;
+            esac
+        else
+           folder_menu
+        fi
+
+
     sleep 0
 }
 
