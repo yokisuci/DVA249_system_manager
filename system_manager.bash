@@ -903,8 +903,6 @@ function change_sticky_bit() {
         else
            folder_menu
         fi
-
-        sleep 0
 }
 
 function change_setgid() {
@@ -951,9 +949,6 @@ function change_setgid() {
         else
            folder_menu
         fi
-
-
-    sleep 0
 }
 
 function change_last_modified() {
@@ -1020,9 +1015,7 @@ function folder_list_attributes(){
 		    HASSETGID="no"
 	    fi
 
-	  
 	        RETURN_CODE=$?
-
             if [[ $RETURN_CODE == 0 ]]; then 
                 dialog --msgbox "\n
 			Owner is: $OWNER \n
