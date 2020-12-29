@@ -619,7 +619,6 @@ function folder_menu() {
         --menu "Select an option" \
         15 0 5 \
         a "Add Folder" \
-        l "List Folder" \
         v "View Folder" \
         m "Modify Folder" \
         d "Delete Folder" \
@@ -631,9 +630,6 @@ function folder_menu() {
         case $CHOICE in
             a)
                 folder_add
-                ;;
-            l)
-                folder_list
                 ;;
             v)
                 folder_view
@@ -680,36 +676,6 @@ function folder_add() {
         main_menu
     fi
 
-}
-
-function folder_list() {
-
-    DIR=$(dialog --title "ADD FOLDER" \
-        --inputbox "Current working directory is $(pwd)\nEnter a folder name" \
-        15 0 \
-        2>&1 >/dev/tty) 
-
-    RETURN_CODE=$?
-    if [[ $RETURN_CODE == 0 ]]; then
-
-        ls "$DIR"
-        RETURN_CODE=$?
-        if [[ $RETURN_CODE == 0 ]]; then
-            dialog --title "FOLDER CONTENT" \
-            --msgbox "$CONTENT" \
-            15 0
-            main_menu
-        elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
-            folder_menu
-        else
-            dialog --title "ERROR" \
-            --msgbox "Folder does not exist!" \
-            15 0
-            folder_menu
-        fi
-    else
-        folder_menu
-    fi
 }
 
 function folder_view() {
