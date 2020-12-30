@@ -49,18 +49,7 @@ function main_menu() {
 # --- NETWORK INFORMATION ---
 # ---------------------------
 
-function computer_name(){
-	dialog --backtitle "Computer Name" \
-	--title "About" \
-	--msgbox "$HOSTNAME" 10 20
 
-    RETURN_CODE=$? 
-    if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
-        network_info
-    elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
-        network_info
-    fi
-}
 
 
 function network_info(){
