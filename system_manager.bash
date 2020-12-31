@@ -60,8 +60,8 @@ function network_info(){
 	GATEWAY=$(ip -4 route show default | cut -d " " -f 3)
 	UP=$(ip a | awk '/state UP/ {printf $2}')
 	DOWN=$(ip a | awk '/state DOWN/ {printf $2}')
-	NAMES=$(ls -1r /sys/class/net)
-	STATUS=$(ip link show | awk '{print $9}')
+#	NAMES=$(ls -1r /sys/class/net)
+#	STATUS=$(ip link show | awk '{print $9}')
 	
 
 
