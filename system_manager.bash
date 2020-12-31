@@ -830,7 +830,7 @@ function change_permissions() {
                     main_menu 
                 fi
                 ;;
-            rr) chmod -r "$FOLDER"
+            rr) chmod a-r "$FOLDER"
                 RETURN_CODE=$?
                 if [[ $RETURN_CODE == 0 ]]; then
                     dialog --title "Remove read" \
