@@ -994,7 +994,7 @@ function folder_list_attributes(){
         if [[ -d $SHOWFOLDER ]]; then
 
 	    TIME=$(date +"%y%m%d %H:%M" -r "$SHOWFOLDER")
-            OWNER=$(ls -ld "$SHOWFOLDER" | awk '{print $3}')
+            OWNER=$(stat -c '%U' "$SHOWFOLDER")
 	    if test -w "$SHOWFOLDER"; then
 		    WRITABLE="yes"
 	    else
