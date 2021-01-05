@@ -15,7 +15,8 @@
 function main_menu() {
 
     CHOICE=$(dialog --clear \
-	--title "SYSTEM MANAGER" \
+        --cancel-label "Quit" \
+	    --title "SYSTEM MANAGER" \
         --menu "Select an option" \
 	15 0 5 \
         n "Network Information" \
