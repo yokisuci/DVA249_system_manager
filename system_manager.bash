@@ -98,6 +98,7 @@ function network_info(){
 function group_menu() {
 
     CHOICE=$(dialog --title "GROUP MENU" \
+        --cancel-label "Back" \
         --menu "Select an option" \
         15 0 6 \
         a "Add Group" \
@@ -354,6 +355,7 @@ RETURN_CODE=$?
 function user_menu() {
 
     CHOICE=$(dialog --backtitle "MAIN MENU" \
+        --ok-label "Back" \
         --title "USER MENU" \
         --menu "Select an option" \
         15 0 5 \
@@ -612,6 +614,7 @@ function user_group_list() {
 function folder_menu() {
 
     CHOICE=$(dialog --title "FOLDER MENU" \
+        --cancel-label "Back" \
         --menu "Select an option" \
         15 0 5 \
         a "Add Folder" \
