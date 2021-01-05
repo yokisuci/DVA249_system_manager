@@ -55,7 +55,7 @@ function main_menu() {
 function network_info(){
 	
 	HOSTNAME=$(hostname)	
-    INFO=$(hostname; for INTERFACE in $(ip -br addr | awk '{print $1}' | grep -v 'lo'); do
+    	INFO=$(hostname; for INTERFACE in $(ip -br addr | awk '{print $1}' | grep -v 'lo'); do
         MAC=$(cat /sys/class/net/"$INTERFACE"/address)
         IP=$(ip -br addr | grep "$INTERFACE" | awk '{print $3}' | cut -d '/' -f 1)
         GATEWAY=$(ip -4 route show default | grep "$INTERFACE" | cut -d " " -f 3 | tail -n 1)
@@ -79,7 +79,7 @@ function network_info(){
 
 	dialog --backtitle "network interfaces" \
 	--title "About" \
-	--msgbox "$INFO" 30 65
+	--msgbox "$INFO" 20 40
 
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
