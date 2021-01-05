@@ -198,7 +198,7 @@ function group_user_view() {
 	2>&1 >/dev/tty)
 	
 	RETURN_CODE=$?
-    if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
+    if [[ $RETURN_CODE == "$DIALOG_OK" && -n "$SHOWGROUPUSERS" ]]; then
         grep "$SHOWGROUPUSERS" /etc/group > /dev/null 2>&1
     	RETURN_CODE=$?
         if [[ $RETURN_CODE == 0 ]]; then
@@ -214,6 +214,11 @@ function group_user_view() {
         elif [[ $RETURN_CODE == "$DIALOG_ESC" ]]; then
             group_menu
         fi
+    elif [[ $RETURN_CODE == "$DIALOG_OK" && -z "$SHOWGROUPUSERS" ]]; then
+        dialog --title "Error" \
+                --msgbox "The field is empty!" \
+                15 25
+        group_user_view
     else
         group_menu
     fi
