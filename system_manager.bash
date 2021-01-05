@@ -174,7 +174,7 @@ function group_list() {
 
 	dialog --backtitle "List all groups" \
 	--title "All groups" \
-	--msgbox "$ALLGROUPS\n"\
+	--msgbox "$ALLGROUPS"\
        		10 25
 
 	RETURN_CODE=$?
