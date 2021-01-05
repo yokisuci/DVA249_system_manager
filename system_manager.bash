@@ -355,7 +355,7 @@ RETURN_CODE=$?
 function user_menu() {
 
     CHOICE=$(dialog --backtitle "MAIN MENU" \
-        --ok-label "Back" \
+        --cancel-label "Back" \
         --title "USER MENU" \
         --menu "Select an option" \
         15 0 5 \
