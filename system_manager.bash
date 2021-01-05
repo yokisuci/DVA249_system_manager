@@ -55,22 +55,21 @@ function main_menu() {
 function network_info(){
 	
 	MYHOST=$(hostname)	
-	IP=$(hostname -I)
+	IP=$(ip -4 -br addr | grep UP | awk '{print $3}' | cut -d '/' -f -1)
 	MAC=$(ip a | grep ether | cut -d " " -f6)
 	GATEWAY=$(ip -4 route show default | cut -d " " -f 3)
 	UP=$(ip a | awk '/state UP/ {printf $2}')
 	DOWN=$(ip a | awk '/state DOWN/ {printf $2}')
 #	NAMES=$(ls -1 /sys/class/net | awk '{print $9}')
 #	STATUS=$(ip link show | awk '{print $9}')
-	NAMES2=$(ls /sys/class/net/ | grep -v 'lo')	
-
+	NAMES=$(ip -br addr | awk '{print $1}' | grep -v 'lo')	
 
 	dialog --backtitle "network interfaces" \
 	--title "About" \
 	--msgbox "  Computer Name:  $MYHOST\n
-		Interfaces: $NAMES2\n
-		Mac address:  $MAC\n
-		Ip address: $IP\n
+		Interfaces: $NAMES\n
+		MAC address:  $MAC\n
+		IP address: $IP\n
 		Gateway:  $GATEWAY\n
 		IP addr up:  $UP\n
 		IP addr down: $DOWN" \
