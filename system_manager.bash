@@ -60,16 +60,17 @@ function network_info(){
 	GATEWAY=$(ip -4 route show default | cut -d " " -f 3)
 	UP=$(ip a | awk '/state UP/ {printf $2}')
 	DOWN=$(ip a | awk '/state DOWN/ {printf $2}')
-#	NAMES=$(ls -1r /sys/class/net)
+#	NAMES=$(ls -1 /sys/class/net | awk '{print $9}')
 #	STATUS=$(ip link show | awk '{print $9}')
-	
+	NAMES2=$(ls /sys/class/net/ | grep -v 'lo')	
 
 
 	dialog --backtitle "network interfaces" \
 	--title "About" \
-	--msgbox "  Ip address:  $IP\n
-		Computer Name:  $MYHOST\n
+	--msgbox "  Computer Name:  $MYHOST\n
+		Interfaces: $NAMES2\n
 		Mac address:  $MAC\n
+		Ip address: $IP\n
 		Gateway:  $GATEWAY\n
 		IP addr up:  $UP\n
 		IP addr down: $DOWN" \
