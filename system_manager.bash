@@ -54,26 +54,32 @@ function main_menu() {
 
 function network_info(){
 	
-	MYHOST=$(hostname)	
-	IP=$(ip -4 -br addr | grep UP | awk '{print $3}' | cut -d '/' -f -1)
-	MAC=$(ip a | grep ether | cut -d " " -f6)
-	GATEWAY=$(ip -4 route show default | cut -d " " -f 3)
-	UP=$(ip a | awk '/state UP/ {printf $2}')
-	DOWN=$(ip a | awk '/state DOWN/ {printf $2}')
-#	NAMES=$(ls -1 /sys/class/net | awk '{print $9}')
-#	STATUS=$(ip link show | awk '{print $9}')
-	NAMES=$(ip -br addr | awk '{print $1}' | grep -v 'lo')	
+	HOSTNAME=$(hostname)	
+    INFO=$(hostname; for INTERFACE in $(ip -br addr | awk '{print $1}' | grep -v 'lo'); do
+        MAC=$(cat /sys/class/net/"$INTERFACE"/address)
+        IP=$(ip -br addr | grep "$INTERFACE" | awk '{print $3}' | cut -d '/' -f 1)
+        GATEWAY=$(ip -4 route show default | grep "$INTERFACE" | cut -d " " -f 3 | tail -n 1)
+        STATUS=$(cat /sys/class/net/"$INTERFACE"/operstate)
+
+        if [[ -z "$IP" ]]; then
+            IP="none"
+        fi
+
+        if [[ -z "$GATEWAY" ]]; then
+            GATEWAY="none"
+        fi
+
+        echo "Interface: $INTERFACE"
+        echo "IP: $IP"
+        echo "MAC Adress: $MAC"
+        echo "Gateway: $GATEWAY"
+        echo "Status: $STATUS"
+        echo
+    done)
 
 	dialog --backtitle "network interfaces" \
 	--title "About" \
-	--msgbox "  Computer Name:  $MYHOST\n
-		Interfaces: $NAMES\n
-		MAC address:  $MAC\n
-		IP address: $IP\n
-		Gateway:  $GATEWAY\n
-		IP addr up:  $UP\n
-		IP addr down: $DOWN" \
-		10 45
+	--msgbox "$INFO" 30 65
 
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
