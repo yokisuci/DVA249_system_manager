@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Antônio Eklöf och Patrik Beijar Odh
+# Grupp 19
+
 # -----------------
 # --- MAIN MENU ---
 # -----------------
@@ -264,8 +267,6 @@ function group_add_user_to_group() {
     else
         group_menu
     fi
-
-
 
 	RETURN_CODE=$?
 	if [[ $RETURN_CODE == "$DIALOG_OK" ]]; then
